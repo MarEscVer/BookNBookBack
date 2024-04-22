@@ -24,12 +24,20 @@ public class GenericException extends AppException{
         this.largeDescription = largeDescription;
     }
 
+    public GenericException(String appError) {
+        super("Generic Exception");
+        this.appError = appError;
+        this.httpCode = 500;
+        this.shortDescription = "Generic Exception";
+        this.largeDescription = "Generic Exception";
+    }
+
     public GenericException(String message, Throwable cause){
         super(message, cause);
-        this.appError = cause.getClass().getName();
-        this.httpCode = -1;
-        this.shortDescription = cause.getMessage();
-        this.largeDescription = cause.getLocalizedMessage();
+        this.appError = cause != null ? cause.getClass().getName() : null;
+        this.httpCode = 500;
+        this.shortDescription = cause != null ? cause.getMessage() : "Generic Exception";
+        this.largeDescription = cause != null ?  cause.getLocalizedMessage() : "Generic Exception";
     }
 
     public GenericException(Throwable e){

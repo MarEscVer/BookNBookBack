@@ -13,6 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 public class Denuncia {
 
     @Id

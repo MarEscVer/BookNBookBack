@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.reader.low.booknbook.model.bnb.id.IdLibroGrupo;
 
-import java.util.List;
-
 @Entity
 @Table(name = "libro_grupo")
 @Builder
@@ -14,6 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 public class LibroGrupo {
 
     @EmbeddedId

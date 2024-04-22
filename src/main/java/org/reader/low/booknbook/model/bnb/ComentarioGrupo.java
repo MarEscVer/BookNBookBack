@@ -14,6 +14,8 @@ import java.sql.Date;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 public class ComentarioGrupo {
 
     @EmbeddedId

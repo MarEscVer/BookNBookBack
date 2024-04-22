@@ -19,6 +19,11 @@ public class HttpBaseException extends GenericException {
         this.status = httpCode;
     }
 
+    public HttpBaseException(String appError){
+        super(appError);
+        this.status = HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+
     public HttpBaseException(String message, Throwable e){
         super(message, e);
         this.status = HttpStatus.INTERNAL_SERVER_ERROR;

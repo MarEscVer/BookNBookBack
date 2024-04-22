@@ -11,6 +11,8 @@ import org.reader.low.booknbook.model.bnb.id.IdSeguimiento;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 public class Seguimiento {
 
     @EmbeddedId

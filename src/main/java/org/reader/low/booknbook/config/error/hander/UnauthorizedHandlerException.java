@@ -15,7 +15,7 @@ public class UnauthorizedHandlerException extends HttpBaseException {
     }
 
     public UnauthorizedHandlerException(String appError) {
-        super(appError, null);
+        super(appError);
     }
 
     public UnauthorizedHandlerException(String appError, HttpStatus httpCode, String shortDescription,
