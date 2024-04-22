@@ -1,19 +1,22 @@
 package org.reader.low.booknbook.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.tags.Tag;
+import org.reader.low.booknbook.constants.ApiConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.servers.Server;
-import io.swagger.v3.oas.models.tags.Tag;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 public class OpenAPIConfig {
@@ -34,7 +37,9 @@ public class OpenAPIConfig {
     prodServer.setUrl(prodUrl);
     prodServer.setDescription("Server URL in Production environment");
 
-    return new OpenAPI().info(generateInfo(generateContact(), generateLicense()))
+    return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
+            .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
+            .info(generateInfo(generateContact(), generateLicense()))
             .tags(generateTags())
             .paths(new Paths())
             .servers(List.of(devServer, prodServer));
@@ -42,8 +47,8 @@ public class OpenAPIConfig {
 
   private List<Tag> generateTags(){
     List<Tag> tags = new ArrayList<>();
-    tags.add(new Tag().name("Tutorial1 management").description("Tutorial1 management APIs"));
-    tags.add(new Tag().name("Tutorial2").description("Tutorial2 management APIs"));
+    tags.add(new Tag().name(ApiConstants.TAG_AUTOR).description("Endpoints que tratan al autor de los libros"));
+    tags.add(new Tag().name(ApiConstants.TAG_PUBLICO).description("Métodos que se usan sin token, ya que son necesarios para un uso mínimo"));
     tags.add(new Tag().name("Tutorial3").description("Tutorial3 management APIs"));
     return tags;
   }
@@ -67,5 +72,10 @@ public class OpenAPIConfig {
 
   private License generateLicense(){
     return new License().name("MIT License").url("https://choosealicense.com/licenses/mit/");
+  }
+
+  private SecurityScheme createAPIKeyScheme() {
+      return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+              .bearerFormat("JWT").scheme("bearer");
   }
 }

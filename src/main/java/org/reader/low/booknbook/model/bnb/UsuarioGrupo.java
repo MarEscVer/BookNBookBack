@@ -3,7 +3,6 @@ package org.reader.low.booknbook.model.bnb;
 import jakarta.persistence.*;
 import lombok.*;
 import org.reader.low.booknbook.model.bnb.id.IdUsuarioGrupo;
-import org.reader.low.booknbook.model.bnb.id.IdValoracion;
 
 @Entity
 @Table(name = "usuario_grupo")
@@ -12,6 +11,8 @@ import org.reader.low.booknbook.model.bnb.id.IdValoracion;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 public class UsuarioGrupo {
 
     @EmbeddedId

@@ -1,6 +1,7 @@
 package org.reader.low.booknbook.model.bnb;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.sql.Blob;
@@ -13,6 +14,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 public class Usuario {
 
     @Id
@@ -38,6 +41,7 @@ public class Usuario {
     private String rol;
 
     @Column(name = "password", nullable=false)
+    @Size(max = 300)
     private String password;
 
     @Column(name = "fotoPerfil")

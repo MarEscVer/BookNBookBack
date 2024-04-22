@@ -1,23 +1,24 @@
 package org.reader.low.booknbook.controller.request.usuario;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 
-@SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterRequest {
+
+    private String usuario;
+
+    private String nombre;
+
+    private String apellidoPrimero;
+
+    private String apellidoSegundo;
+
     private String email;
 
     private String password;
-
-    private String name;
-
-    private String phone;
 
 }

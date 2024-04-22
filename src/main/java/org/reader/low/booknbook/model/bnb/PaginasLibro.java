@@ -11,6 +11,8 @@ import org.reader.low.booknbook.model.bnb.id.IdPaginasLibro;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 public class PaginasLibro {
 
     @EmbeddedId
