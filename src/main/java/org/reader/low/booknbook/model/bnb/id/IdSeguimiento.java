@@ -2,14 +2,17 @@ package org.reader.low.booknbook.model.bnb.id;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
 @Embeddable
 @EqualsAndHashCode
-@ToString
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class IdSeguimiento implements Serializable {
 
     @Column(name = "id_seguido")

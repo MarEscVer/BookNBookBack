@@ -17,9 +17,10 @@ import org.reader.low.booknbook.persistence.repository.UsuarioRepository;
 import org.reader.low.booknbook.service.DefaultUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Slf4j
 @NoArgsConstructor
@@ -34,26 +35,25 @@ public class DefaultUserServiceImpl implements DefaultUserService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        Usuario usuarioLogin = usuarioRepository.findByNombreUsuario(loginRequest.getUsername()).get(0);
-        if(usuarioLogin != null) {
-            BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-            if (bcrypt.matches(loginRequest.getPassword(), usuarioLogin.getPassword())) {
-                return new LoginResponse(usuarioLogin.getNombreUsuario(),usuarioLogin.getRol(),
-                        TokenUtils.createToken(usuarioLogin.getNombreUsuario(), usuarioLogin.getNombre(), usuarioLogin.getRol()));
-            }else {
-                throw new UnauthorizedHandlerException("login_password","La contraseña no es correcta. Vuelve a introducirla");
-            }
-        } else {
-            throw new UnauthorizedHandlerException("login_username","No tenemos el usuario registrado. Registrate");
+        Usuario usuarioLogin = usuarioRepository.findByNombreUsuario(loginRequest.getUsername())
+                .orElseThrow(()->new UnauthorizedHandlerException("usuario_validation",
+                        "El usuario introducido no pertenece a la comunidad BookNBook"));
+
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        if (bcrypt.matches(loginRequest.getPassword(), usuarioLogin.getPassword())) {
+            return new LoginResponse(usuarioLogin.getNombreUsuario(),usuarioLogin.getRol(),
+                    TokenUtils.createToken(usuarioLogin.getNombreUsuario(), usuarioLogin.getNombre(), usuarioLogin.getRol()));
+        }else {
+            throw new UnauthorizedHandlerException("login_password","La contraseña no es correcta. Vuelve a introducirla");
         }
     }
 
     @Override
     public void register(RegisterRequest registerRequest) {
-        try {
-            Usuario usuario = usuarioRepository.findByNombreUsuario(registerRequest.getUsuario()).get(0);
+        Optional<Usuario> usuario = usuarioRepository.findByNombreUsuario(registerRequest.getUsuario());
+        if(usuario.isPresent()) {
             throw new BadRequestHanderException("register_usuarioExistente", "Usuario ya registrado.");
-        }catch (IndexOutOfBoundsException e) {
+        }else{
             Usuario registro = RepositoryMapping.mapToUsuarioRegister(registerRequest);
             usuarioRepository.save(registro);
         }
@@ -61,23 +61,18 @@ public class DefaultUserServiceImpl implements DefaultUserService {
 
     @Override
     public TokenResult getTokenResult(AuthCredentials requestCredentials, boolean gen) {
-        try {
-            if(gen){
-                return new TokenResult(TokenUtils.createToken(requestCredentials.getUsername(), null, null),
-                        new BCryptPasswordEncoder().encode(requestCredentials.getPassword()));
-            }
-            UserDetailsImpl userDetails = (UserDetailsImpl) tokenService.loadUserByUsername(requestCredentials.getUsername());
-
-            BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-            if (bcrypt.matches(requestCredentials.getPassword(), userDetails.getPassword())){
-                return new TokenResult(TokenUtils.createToken(requestCredentials.getUsername(), userDetails.getNombre(), userDetails.getRol()),
-                        userDetails.getPassword());
-            }else {
-                throw new UnauthorizedHandlerException("generate_token", "La contraseña no pertenece al usuario '" +
-                        requestCredentials.getUsername() + "'");
-            }
-        }catch (UsernameNotFoundException e){
-            throw new UnauthorizedHandlerException("generate_token", e.getLocalizedMessage());
+        if(gen){
+            return new TokenResult(TokenUtils.createToken(requestCredentials.getUsername(), null, null),
+                    new BCryptPasswordEncoder().encode(requestCredentials.getPassword()));
+        }
+        UserDetailsImpl userDetails = (UserDetailsImpl) tokenService.loadUserByUsername(requestCredentials.getUsername());
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        if (bcrypt.matches(requestCredentials.getPassword(), userDetails.getPassword())){
+            return new TokenResult(TokenUtils.createToken(requestCredentials.getUsername(), userDetails.getNombre(), userDetails.getRol()),
+                    userDetails.getPassword());
+        }else {
+            throw new UnauthorizedHandlerException("generate_token", "La contraseña no pertenece al usuario '" +
+                    requestCredentials.getUsername() + "'");
         }
     }
 }

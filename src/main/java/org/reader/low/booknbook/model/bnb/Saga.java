@@ -3,6 +3,7 @@ package org.reader.low.booknbook.model.bnb;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -13,8 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
-public class Saga {
+public class Saga implements Serializable {
 
     @Id
     @GeneratedValue(strategy  = GenerationType.IDENTITY)
@@ -23,6 +23,6 @@ public class Saga {
     @Column(name = "nombre", nullable=false)
     private String nombre;
 
-    @OneToMany(mappedBy = "saga")
+    @OneToMany(mappedBy = "saga", cascade=CascadeType.ALL)
     private List<Libro> libro;
 }

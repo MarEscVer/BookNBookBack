@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.reader.low.booknbook.model.bnb.id.IdPaginasLibro;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "paginas_leidas")
 @Builder
@@ -12,8 +14,7 @@ import org.reader.low.booknbook.model.bnb.id.IdPaginasLibro;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
-public class PaginasLibro {
+public class PaginasLibro implements Serializable {
 
     @EmbeddedId
     private IdPaginasLibro id;
@@ -21,12 +22,12 @@ public class PaginasLibro {
     @Column(name = "paginasLeidas")
     private Integer paginasLeidas;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @MapsId("idLibro")
     @JoinColumn(name = "id_libro")
     private Libro libro;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @MapsId("idUsuario")
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;

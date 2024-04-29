@@ -20,7 +20,10 @@ public class ApiConstants {
     public static final String ERROR_CODE_CHARACTER = "character_not_valid";
 
     public static final String TAG_AUTOR = "Autor";
+    public static final String TAG_GRUPO = "Grupo";
     public static final String TAG_PUBLICO = "Metodos de uso Público";
+    public static final String TAG_ADMIN = "Administrador";
+    public static final String TAG_COMBO = "Combos";
 
     private ApiConstants(){
         throw new IllegalStateException("ApiConstants class");

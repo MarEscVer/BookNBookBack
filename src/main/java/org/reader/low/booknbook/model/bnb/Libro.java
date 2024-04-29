@@ -3,6 +3,7 @@ package org.reader.low.booknbook.model.bnb;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.Date;
 import java.util.List;
@@ -16,8 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
-public class Libro {
+public class Libro implements Serializable {
 
     @Id
     @GeneratedValue(strategy  = GenerationType.IDENTITY)
@@ -38,32 +38,32 @@ public class Libro {
     @Column(name = "fotoLibro")
     private Blob fotoLibro;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, /*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @JoinColumn(name = "id_autor")
     private Autor autor;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, /*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @JoinColumn(name = "id_genero")
     private Genero genero;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, /*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @JoinColumn(name = "id_tipo")
     private Genero tipo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @JoinColumn(name = "id_saga")
     private Saga saga;
 
-    @OneToMany(mappedBy = "libro")
+    @OneToMany(mappedBy = "libro", cascade=CascadeType.ALL)
     private Set<LibroGrupo> libroGrupo;
 
-    @OneToMany(mappedBy = "libro")
+    @OneToMany(mappedBy = "libro", cascade=CascadeType.ALL)
     private Set<PaginasLibro> paginasLibro;
 
-    @OneToMany(mappedBy = "libro")
+    @OneToMany(mappedBy = "libro", cascade=CascadeType.ALL)
     private Set<Valoracion> valoracion;
 
-    @OneToMany(mappedBy = "libro")
+    @OneToMany(mappedBy = "libro", cascade=CascadeType.ALL)
     private List<ComentarioGrupo> comentarioGrupo;
 
 }

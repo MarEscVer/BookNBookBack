@@ -31,9 +31,11 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
         JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
         jwtAuthenticationFilter.setAuthenticationManager(authManager);
+        System.out.println("HTTSS"+http);
         // devuelve un header en ese endpoint, no usar para /token
         jwtAuthenticationFilter.setFilterProcessesUrl("/tokenjwt");
             return http.cors().and().authorizeHttpRequests().requestMatchers("/api/**").authenticated()
+                    .and().authorizeHttpRequests().requestMatchers("/admin/**").hasRole("ADMIN")
                     .and().authorizeHttpRequests().anyRequest().permitAll().and()
                     .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -53,6 +55,16 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    /*@Bean
+    UserDetailsService userDetailsService(){
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+        manager.createUser(User.withUsername("admin")
+                .password(passwordEncoder().encode("admin"))
+                .roles()
+                .build());
+        return manager;
+    }*/
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {

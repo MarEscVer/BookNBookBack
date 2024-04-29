@@ -3,6 +3,7 @@ package org.reader.low.booknbook.model.bnb;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -14,8 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
-public class Genero {
+public class Genero implements Serializable {
 
     @Id
     @GeneratedValue(strategy  = GenerationType.IDENTITY)
@@ -33,13 +33,13 @@ public class Genero {
     @OneToMany(mappedBy = "genero")
     private List<Libro> libroTipo;
 
-    @OneToMany(mappedBy = "genero")
+    @OneToMany(mappedBy = "genero", cascade=CascadeType.ALL)
     private List<Grupo> grupoGenero;
 
-    @OneToMany(mappedBy = "genero")
+    @OneToMany(mappedBy = "genero", cascade=CascadeType.ALL)
     private List<Grupo> grupoTipo;
 
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(
             name = "preferencia_usuario",
             joinColumns = @JoinColumn(name = "id_usuario"),

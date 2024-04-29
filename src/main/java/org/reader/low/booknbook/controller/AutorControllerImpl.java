@@ -3,7 +3,6 @@ package org.reader.low.booknbook.controller;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.controller.interfaz.AutorController;
-import org.reader.low.booknbook.controller.request.autor.AutorPerfilRequest;
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
 import org.reader.low.booknbook.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class AutorControllerImpl implements AutorController {
     private AutorService autorService;
 
     @Override
-    public AutorPerfilResponse getperfilAutor(AutorPerfilRequest autorPerfilRequest) {
-        return autorService.getAutorPerfil(autorPerfilRequest);
+    public AutorPerfilResponse getperfilAutor(Long idAutor) {
+        return autorService.getAutorPerfil(idAutor);
     }
 }

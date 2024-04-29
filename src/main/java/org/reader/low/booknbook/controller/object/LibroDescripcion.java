@@ -1,6 +1,7 @@
 package org.reader.low.booknbook.controller.object;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -9,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 public class LibroDescripcion {
 
-    private String imagen;
+    private MultipartFile imagen;
 
     private String saga;
 

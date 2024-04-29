@@ -4,19 +4,18 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.reader.low.booknbook.model.bnb.id.IdComentarioGrupo;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 
 @Entity
 @Table(name = "comentarioGrupo")
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
-public class ComentarioGrupo {
+public class ComentarioGrupo implements Serializable {
 
     @EmbeddedId
     private IdComentarioGrupo id;
@@ -27,21 +26,21 @@ public class ComentarioGrupo {
     @Column(name = "fechaComentarioGrupo", nullable=false)
     private Date fechaComentarioGrupo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @JoinColumn(name = "id_denuncia")
     private Denuncia denuncia;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @MapsId("idLibro")
     @JoinColumn(name = "id_libro")
     private Libro libro;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @MapsId("idGrupo")
     @JoinColumn(name = "id_grupo")
     private Grupo grupo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @MapsId("idUsuario")
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;

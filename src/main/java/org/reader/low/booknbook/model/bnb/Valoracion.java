@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.reader.low.booknbook.model.bnb.id.IdValoracion;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
@@ -14,8 +15,7 @@ import java.sql.Date;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
-public class Valoracion {
+public class Valoracion implements Serializable {
 
     @EmbeddedId
     private IdValoracion id;
@@ -38,16 +38,16 @@ public class Valoracion {
     @Column(name = "fechaLectura")
     private Date fechaLectura;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name = "id_denuncia")
     private Denuncia denuncia;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @MapsId("idUsuario")
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @MapsId("idLibro")
     @JoinColumn(name = "id_libro")
     private Libro libro;
