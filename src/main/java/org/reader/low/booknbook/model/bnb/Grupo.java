@@ -3,6 +3,7 @@ package org.reader.low.booknbook.model.bnb;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -13,8 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
-public class Grupo {
+public class Grupo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,20 +26,24 @@ public class Grupo {
     @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Lob
+    @Column(name = "imagen", columnDefinition="LONGBLOB")
+    private byte[] imagen;
+
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @JoinColumn(name = "id_genero")
     private Genero genero;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @JoinColumn(name = "id_tipo")
     private Genero tipo;
 
-    @OneToMany(mappedBy = "grupo")
+    @OneToMany(mappedBy = "grupo", cascade=CascadeType.ALL)
     private List<UsuarioGrupo> usuarioGrupo;
 
-    @OneToMany(mappedBy = "grupo")
+    @OneToMany(mappedBy = "grupo", cascade=CascadeType.ALL)
     private List<LibroGrupo> libroGrupo;
 
-    @OneToMany(mappedBy = "grupo")
+    @OneToMany(mappedBy = "grupo", cascade=CascadeType.ALL)
     private List<ComentarioGrupo> comentarioGrupo;
 }

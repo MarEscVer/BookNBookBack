@@ -2,7 +2,6 @@ package org.reader.low.booknbook.controller.object;
 
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 @Getter
@@ -12,16 +11,19 @@ import java.util.Map;
 @NoArgsConstructor
 public class GroupDescripcion {
 
+    private Long id;
+
     private String nombre;
 
     private String descripcion;
-
     // valor , color
     private Map<String, String> genero;
-
+    // valor , color
     private Map<String, String> tipo;
 
-    private BigDecimal miembros;
+    private Integer miembros;
 
     private Boolean perteneces;
+
+    private byte[] imagen;
 }

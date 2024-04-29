@@ -3,19 +3,18 @@ package org.reader.low.booknbook.model.bnb;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Blob;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "autor")
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode
-@ToString
-public class Autor {
+public class Autor implements Serializable {
 
     @Id
     @GeneratedValue(strategy  = GenerationType.IDENTITY)
@@ -28,11 +27,11 @@ public class Autor {
     private String localidad;
 
     @Column(name = "fotoAutor")
-    private Blob fotoAutor;
+    private byte[] fotoAutor;
 
     @Column(name = "biografia")
     private String biografia;
 
-    @OneToMany(mappedBy = "autor")
+    @OneToMany(mappedBy = "autor", cascade=CascadeType.ALL)
     private List<Libro> libro;
 }

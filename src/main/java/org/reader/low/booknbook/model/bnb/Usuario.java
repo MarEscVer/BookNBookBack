@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.io.Serializable;
 import java.sql.Blob;
 import java.util.Set;
 
@@ -15,8 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
-public class Usuario {
+public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,25 +47,28 @@ public class Usuario {
     @Column(name = "fotoPerfil")
     private Blob fotoPerfil;
 
-    @OneToMany(mappedBy = "usuario")
+    @Column(name = "estado", nullable=false, columnDefinition = "boolean default true")
+    private boolean estado;
+
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Set<PaginasLibro> paginasLibro;
 
-    @OneToMany(mappedBy = "idSeguido")
+    @OneToMany(mappedBy = "idSeguido", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Set<Seguimiento> seguido;
 
-    @OneToMany(mappedBy = "idSeguidor")
+    @OneToMany(mappedBy = "idSeguidor", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Set<Seguimiento> seguidor;
 
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Set<UsuarioGrupo> usuarioGrupo;
 
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Set<Valoracion> valoracion;
 
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Set<ComentarioGrupo> comentarioGrupo;
 
-    @ManyToMany(mappedBy = "preferenciaUsuario")
+    @ManyToMany(mappedBy = "preferenciaUsuario",fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     Set<Genero> preferenciaUsuario;
 
 }

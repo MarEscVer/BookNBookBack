@@ -43,8 +43,12 @@ public class JWTAuthorizationFilter extends GenericFilterBean {
         if(bearerToken != null && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.replace("Bearer ", "");
             UsernamePasswordAuthenticationToken usernamePAT = TokenUtils.getAuthentication(token);
+
             try {
-                Usuario usuario = usuarioRepository.findByNombreUsuario((String)usernamePAT.getPrincipal()).get(0);
+                Usuario usuario = usuarioRepository.findByNombreUsuario((String)usernamePAT.getPrincipal()).orElseThrow(()->
+                        new UnauthorizedHandlerException("usuario_validation",
+                                "El usuario introducido no pertenece a la comunidad BookNBook")
+                );
 
                 validateRol(usernamePAT, usuario);
                 SecurityContextHolder.getContext().setAuthentication(usernamePAT);

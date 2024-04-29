@@ -2,8 +2,6 @@ package org.reader.low.booknbook.controller.request.grupo;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
@@ -11,11 +9,11 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateGroupRequest {
 
-    private String nombre;
+    private String nombreGrupo;
 
-    private List<Integer> generos;
+    private Long genero;
 
-    private List<Integer> tipos;
+    private Long tipo;
 
     private String descripcion;
 }

@@ -1,7 +1,7 @@
 package org.reader.low.booknbook.controller.response.grupo;
 
 import lombok.*;
-import org.reader.low.booknbook.controller.object.GroupDescripcion;
+import org.reader.low.booknbook.controller.object.NombreGrupos;
 
 import java.util.List;
 
@@ -10,7 +10,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListGroupResponse {
+public class ListNameGrupoResponse {
 
-    List<GroupDescripcion> listGroup;
+    private List<NombreGrupos> nombreGrupos;
+
 }

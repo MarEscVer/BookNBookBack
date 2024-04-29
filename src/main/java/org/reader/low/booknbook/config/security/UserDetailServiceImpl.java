@@ -1,6 +1,7 @@
 package org.reader.low.booknbook.config.security;
 
 import lombok.NoArgsConstructor;
+import org.reader.low.booknbook.config.error.hander.UnauthorizedHandlerException;
 import org.reader.low.booknbook.model.bnb.Usuario;
 import org.reader.low.booknbook.persistence.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = null;
-        try {
-            usuario = usuarioRepository.findByNombreUsuario(username).get(0);
-        }catch(IndexOutOfBoundsException e){
-            throw new UsernameNotFoundException("El usuario '" + username + "' no existe.");
-        }
+        Usuario usuario = usuarioRepository.findByNombreUsuario(username)
+                .orElseThrow(()->new UnauthorizedHandlerException("usuario_validation",
+                        "El usuario introducido no pertenece a la comunidad BookNBook"));
         return new UserDetailsImpl(usuario);
     }
 }

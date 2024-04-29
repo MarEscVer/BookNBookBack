@@ -1,6 +1,7 @@
 package org.reader.low.booknbook.controller.response.autor;
 
 import lombok.*;
+import org.reader.low.booknbook.controller.object.LibroObject;
 
 import java.util.List;
 
@@ -11,13 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 public class AutorPerfilResponse {
 
-    private String imagen;
+    private byte[] imagen;
 
     private String pseudonimo;
 
     private String biografia;
 
-    private List<String> genero;
-
-    private List<String> tipo;
+    private List<LibroObject> libros;
 }

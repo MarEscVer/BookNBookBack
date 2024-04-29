@@ -9,7 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 public class NombreGrupos {
 
+    private Long idGrupo;
+
     private String nombreGrupo;
 
     private Boolean administrador;
+
+    private byte[] imagen;
 }

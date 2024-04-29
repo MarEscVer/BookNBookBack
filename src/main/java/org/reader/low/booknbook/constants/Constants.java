@@ -8,6 +8,10 @@ public class Constants {
     //Si se incrementa este valor a más de 8, hay que añadir variables en el swich y en la base de datos.
     public static final Integer LONGITUD_URL = 7;
 
+    public static final String P = "P";
+
+    public static final String A = "A";
+
     private Constants(){
         throw new IllegalStateException("Constants class");
     }

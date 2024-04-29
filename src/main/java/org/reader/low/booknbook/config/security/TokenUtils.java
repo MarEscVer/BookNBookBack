@@ -5,13 +5,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 public class TokenUtils {
@@ -41,6 +39,10 @@ public class TokenUtils {
         Claims claims = Jwts.parser().verifyWith(secret).build().parseSignedClaims(token).getPayload();
         String username = claims.getSubject();
         String rol = (String)claims.get("rol");
-        return new UsernamePasswordAuthenticationToken(username, claims, Collections.emptyList());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_"+rol);
+        System.out.println("PRUEBA "+authority);
+        List<SimpleGrantedAuthority> updatedAuthorities = new ArrayList<SimpleGrantedAuthority>();
+        updatedAuthorities.add(authority);
+        return new UsernamePasswordAuthenticationToken(username, claims, updatedAuthorities);
     }
 }

@@ -49,7 +49,7 @@ public class OpenAPIConfig {
     List<Tag> tags = new ArrayList<>();
     tags.add(new Tag().name(ApiConstants.TAG_AUTOR).description("Endpoints que tratan al autor de los libros"));
     tags.add(new Tag().name(ApiConstants.TAG_PUBLICO).description("Métodos que se usan sin token, ya que son necesarios para un uso mínimo"));
-    tags.add(new Tag().name("Tutorial3").description("Tutorial3 management APIs"));
+    tags.add(new Tag().name(ApiConstants.TAG_GRUPO).description("Endpoints que tratan los grupos"));
     return tags;
   }
 
