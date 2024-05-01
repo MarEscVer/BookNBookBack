@@ -30,7 +30,7 @@ public class GrupoControllerImpl implements GrupoController {
     private GrupoService grupoService;
 
     @Override
-    public void createGroup(Long idGrupo, MultipartFile createGroupRequest) throws IOException {
+    public void createGroupImagen(Long idGrupo, MultipartFile createGroupRequest) throws IOException {
         grupoService.setImageToGroup(idGrupo, createGroupRequest);
     }
 
