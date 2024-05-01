@@ -9,9 +9,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode
 @Getter
 @Setter
-public class Combo {
+public class ComboGenero extends Combo{
 
-    private Long id;
-
-    private String nombre;
+    private String color;
 }

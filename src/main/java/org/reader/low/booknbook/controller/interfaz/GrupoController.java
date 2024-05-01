@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Pattern;
 import org.reader.low.booknbook.constants.ApiConstants;
 import org.reader.low.booknbook.controller.request.grupo.CreateGroupRequest;
 import org.reader.low.booknbook.controller.response.DeleteResponse;
+import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListNameGrupoResponse;
 import org.springframework.http.MediaType;
@@ -22,14 +23,14 @@ public interface GrupoController extends Controller {
 
     @Operation(summary = "Crear un nuevo grupo", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = void.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+            @Content(schema = @Schema(implementation = IdResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @PostMapping
-    public void createGroup(@RequestBody CreateGroupRequest createGroupRequest) throws IOException;
+    public IdResponse createGroup(@RequestBody CreateGroupRequest createGroupRequest) throws IOException;
 
     @Operation(summary = "Poner imagen al grupo", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = void.class), mediaType = ApiConstants.JSON_RESPONSE),  })
-    @PutMapping(value = "/imagen", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void createGroupImagen(
             @Parameter(name="idGrupo", in = ParameterIn.QUERY, description = "Grupo al que se asigna la imagen", required = true, example="1")
             @RequestParam(name="idGrupo")Long idGrupo,

@@ -8,15 +8,14 @@ import org.reader.low.booknbook.config.security.SecurityUtils;
 import org.reader.low.booknbook.constants.Constants;
 import org.reader.low.booknbook.controller.request.grupo.CreateGroupRequest;
 import org.reader.low.booknbook.controller.response.DeleteResponse;
+import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListNameGrupoResponse;
+import org.reader.low.booknbook.model.bnb.Genero;
 import org.reader.low.booknbook.model.bnb.Grupo;
 import org.reader.low.booknbook.model.bnb.Usuario;
 import org.reader.low.booknbook.model.bnb.UsuarioGrupo;
-import org.reader.low.booknbook.persistence.repository.GrupoRepository;
-import org.reader.low.booknbook.persistence.repository.PredicatesCriteria;
-import org.reader.low.booknbook.persistence.repository.UsuarioGrupoRepository;
-import org.reader.low.booknbook.persistence.repository.UsuarioRepository;
+import org.reader.low.booknbook.persistence.repository.*;
 import org.reader.low.booknbook.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,8 +31,7 @@ import java.util.List;
 
 import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToGroup;
 import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToUsuarioGrupo;
-import static org.reader.low.booknbook.mapper.ResponseMapping.mapToListGroupResponse;
-import static org.reader.low.booknbook.mapper.ResponseMapping.mapToListNameGroupResponse;
+import static org.reader.low.booknbook.mapper.ResponseMapping.*;
 import static org.reader.low.booknbook.utils.ApplicationUtils.filteringListPage;
 
 @Slf4j
@@ -51,18 +49,26 @@ public class GrupoServiceImpl implements GrupoService {
     private UsuarioGrupoRepository usuarioGrupoRepository;
 
     @Autowired
+    private GeneroRepository generoRepository;
+
+    @Autowired
     private PredicatesCriteria predicatesCriteria;
 
 
     @Override
-    public void createGroup(CreateGroupRequest createGroupRequest) throws IOException {
-        Grupo grupo = mapToGroup(createGroupRequest);
-        //TODO: llamar a la tabla genero para obtener genero y tipo seleccionado(Si se ha seleccionado)
+    public IdResponse createGroup(CreateGroupRequest createGroupRequest) throws IOException {
+        Genero genero = generoRepository.getReferenceById(createGroupRequest.getGenero());
+        Genero tipo = generoRepository.getReferenceById(createGroupRequest.getTipo());
+        Grupo grupo = mapToGroup(createGroupRequest, genero, tipo);
         Grupo grupoSaved = grupoRepository.save(grupo);
         Usuario usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
         usuarioGrupoRepository.save(mapToUsuarioGrupo(grupoSaved, usuario, "SIR"));
+        return mapToIdResponseGrupo(grupoSaved);
     }
 
+    private IdResponse mapToIdResponseGrupo(Grupo grupo) {
+        return mapToIdResponse(grupo.getId(), "Grupo guardado Correctamente.");
+    }
 
 
     private void saveUsuarioGrupo(Grupo grupo, Usuario usuario, String rol) {
@@ -79,11 +85,11 @@ public class GrupoServiceImpl implements GrupoService {
     }
 
     @Override
-    public ListGrupoResponse getListGroup(Integer pageIndex, Integer size, String filter) {
+    public ListGrupoResponse getListGroup(Integer pageIndex, Integer size, String filter, boolean needToken) {
         Pageable page = PageRequest.of(pageIndex, size);
         List<Grupo> grupos = predicatesCriteria.searchGroup(filter);
         Page<Grupo> gruposPage = new PageImpl<>(grupos ,page, grupos.size());
-        return mapToListGroupResponse(gruposPage.toList());
+        return mapToListGroupResponse(gruposPage.toList(), needToken);
     }
 
     @Override

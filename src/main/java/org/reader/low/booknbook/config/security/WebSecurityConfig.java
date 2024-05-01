@@ -31,7 +31,6 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
         JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
         jwtAuthenticationFilter.setAuthenticationManager(authManager);
-        System.out.println("HTTSS"+http);
         // devuelve un header en ese endpoint, no usar para /token
         jwtAuthenticationFilter.setFilterProcessesUrl("/tokenjwt");
             return http.cors().and().authorizeHttpRequests().requestMatchers("/api/**").authenticated()

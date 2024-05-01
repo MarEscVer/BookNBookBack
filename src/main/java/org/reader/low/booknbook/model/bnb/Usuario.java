@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Set;
 
 @Entity
@@ -44,8 +43,9 @@ public class Usuario implements Serializable {
     @Size(max = 300)
     private String password;
 
-    @Column(name = "fotoPerfil")
-    private Blob fotoPerfil;
+    @Lob
+    @Column(name = "fotoPerfil", columnDefinition="LONGBLOB")
+    private byte[] fotoPerfil;
 
     @Column(name = "estado", nullable=false, columnDefinition = "boolean default true")
     private boolean estado;

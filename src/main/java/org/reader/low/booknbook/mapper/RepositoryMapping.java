@@ -33,11 +33,11 @@ public class RepositoryMapping {
                 .build();
     }
 
-    public static Grupo mapToGroup(CreateGroupRequest createGroupRequest) {
+    public static Grupo mapToGroup(CreateGroupRequest createGroupRequest, Genero genero, Genero tipo) {
         return Grupo.builder()
                 .nombre(createGroupRequest.getNombreGrupo())
-                .tipo(createGroupRequest.getTipo() != null && createGroupRequest.getTipo() != 0 ? Genero.builder().id(createGroupRequest.getTipo()).build() : null)
-                .genero(createGroupRequest.getGenero() != null && createGroupRequest.getGenero() != 0 ? Genero.builder().id(createGroupRequest.getGenero()).build() : null)
+                .tipo(createGroupRequest.getTipo() != null && createGroupRequest.getTipo() != 0 ? tipo : null)
+                .genero(createGroupRequest.getGenero() != null && createGroupRequest.getGenero() != 0 ? genero : null)
                 .descripcion(createGroupRequest.getDescripcion())
                 .build();
     }

@@ -8,8 +8,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Slf4j
 public class SecurityUtils {
 
-    private static UsernamePasswordAuthenticationToken getUserDetails() {
-        return (UsernamePasswordAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
+    public static UsernamePasswordAuthenticationToken getUserDetails() {
+        log.error("Errr "+ SecurityContextHolder.getContext().getAuthentication().toString());
+        if(!"anonymousUser".equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
+            return (UsernamePasswordAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
+        }
+        return null;
     }
 
 

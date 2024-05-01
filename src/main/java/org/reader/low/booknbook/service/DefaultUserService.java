@@ -13,4 +13,5 @@ public interface DefaultUserService {
     LoginResponse login(LoginRequest loginRequest);
 
     void register(RegisterRequest registerRequest);
+
 }

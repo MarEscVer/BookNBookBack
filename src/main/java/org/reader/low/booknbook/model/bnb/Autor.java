@@ -26,7 +26,8 @@ public class Autor implements Serializable {
     @Column(name = "localidad")
     private String localidad;
 
-    @Column(name = "fotoAutor")
+    @Lob
+    @Column(name = "fotoAutor", columnDefinition="LONGBLOB")
     private byte[] fotoAutor;
 
     @Column(name = "biografia")

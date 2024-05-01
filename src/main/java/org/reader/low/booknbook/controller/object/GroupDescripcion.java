@@ -2,8 +2,6 @@ package org.reader.low.booknbook.controller.object;
 
 import lombok.*;
 
-import java.util.Map;
-
 @Getter
 @Setter
 @Builder
@@ -16,10 +14,10 @@ public class GroupDescripcion {
     private String nombre;
 
     private String descripcion;
-    // valor , color
-    private Map<String, String> genero;
-    // valor , color
-    private Map<String, String> tipo;
+
+    private ComboGenero genero;
+
+    private ComboGenero tipo;
 
     private Integer miembros;
 

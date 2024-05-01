@@ -7,6 +7,7 @@ import org.reader.low.booknbook.constants.Constants;
 import org.reader.low.booknbook.controller.interfaz.GrupoController;
 import org.reader.low.booknbook.controller.response.DeleteResponse;
 import org.reader.low.booknbook.controller.request.grupo.CreateGroupRequest;
+import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListNameGrupoResponse;
 import org.reader.low.booknbook.service.GrupoService;
@@ -35,8 +36,8 @@ public class GrupoControllerImpl implements GrupoController {
     }
 
     @Override
-    public void createGroup(CreateGroupRequest createGroupRequest) throws IOException {
-        grupoService.createGroup(createGroupRequest);
+    public IdResponse createGroup(CreateGroupRequest createGroupRequest) throws IOException {
+        return grupoService.createGroup(createGroupRequest);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class GrupoControllerImpl implements GrupoController {
         if (!StringUtils.hasText(filter)){
             filter = "";
         }
-        return grupoService.getListGroup(pageIndex, size, filter);
+        return grupoService.getListGroup(pageIndex, size, filter, true);
     }
 
     @Override

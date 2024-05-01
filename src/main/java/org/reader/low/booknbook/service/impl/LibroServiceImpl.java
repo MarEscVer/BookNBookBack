@@ -7,6 +7,7 @@ import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
 import org.reader.low.booknbook.config.security.SecurityUtils;
 import org.reader.low.booknbook.controller.request.libro.CreateLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.PuntuarLibroRequest;
+import org.reader.low.booknbook.controller.response.ListaLibrosRecomendadosResponse;
 import org.reader.low.booknbook.model.bnb.*;
 import org.reader.low.booknbook.persistence.repository.*;
 import org.reader.low.booknbook.service.LibroService;
@@ -14,8 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToLibro;
 import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToValoracion;
+import static org.reader.low.booknbook.mapper.ResponseMapping.mapToListLibroDescripcion;
 
 @Slf4j
 @NoArgsConstructor
@@ -40,6 +45,9 @@ public class LibroServiceImpl implements LibroService {
     @Autowired
     private ValoracionRepository valoracionRepository;
 
+    @Autowired
+    private PredicatesCriteria predicatesCriteria;
+
     @Override
     public void puntuarLibro(PuntuarLibroRequest request) {
         Usuario usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
@@ -56,12 +64,10 @@ public class LibroServiceImpl implements LibroService {
 
     @Override
     public void crearLibro(CreateLibroRequest request) {
-
         Autor autor = null;
         Genero genero = null;
         Genero tipo = null;
         Saga saga = null;
-
             try {
                 autor = autorRepository.getReferenceById(request.getIdAutor());
                 if(request.getGenero() != null){
@@ -81,7 +87,22 @@ public class LibroServiceImpl implements LibroService {
             }
             Libro libro = mapToLibro(request, autor, genero, tipo, saga);
             libroRepository.save(libro);
+    }
 
+    @Override
+    public ListaLibrosRecomendadosResponse getListRecomendados(Integer pageIndex, Integer size, String filter){
+        List<Libro> leidos = predicatesCriteria.librosMasLeidos(pageIndex, size);
+        List<Libro> recomendados = predicatesCriteria.librosRecomendados(filter, pageIndex, size);
+        List<Libro> novedades = predicatesCriteria.librosNovedades(filter, pageIndex, size);
+        List<Libro> otros = libroRepository.findAll();
+        Collections.shuffle(otros);
+        otros = otros.subList(0, 10);
+        return ListaLibrosRecomendadosResponse.builder()
+                .masLeidos(mapToListLibroDescripcion(leidos))
+                .recomendados(mapToListLibroDescripcion(recomendados))
+                .novedades(mapToListLibroDescripcion(novedades))
+                .listaFiltro(mapToListLibroDescripcion(otros))
+                .build();
     }
 
 

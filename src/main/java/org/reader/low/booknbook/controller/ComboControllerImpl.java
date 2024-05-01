@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.controller.interfaz.ComboController;
 import org.reader.low.booknbook.controller.response.ComboResponse;
+import org.reader.low.booknbook.controller.response.GeneroComboResponse;
 import org.reader.low.booknbook.service.ComboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,5 +29,10 @@ public class ComboControllerImpl implements ComboController {
     @Override
     public ComboResponse comboAutores(String filter) {
         return comboService.comboAutores(filter);
+    }
+
+    @Override
+    public GeneroComboResponse comboGenero() {
+        return comboService.comboGenero();
     }
 }

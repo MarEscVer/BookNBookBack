@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.reader.low.booknbook.constants.ApiConstants;
 import org.reader.low.booknbook.controller.response.ComboResponse;
+import org.reader.low.booknbook.controller.response.GeneroComboResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,4 +30,10 @@ public interface ComboController extends Controller {
     ComboResponse comboAutores(
             @Parameter(name="filter", in = ParameterIn.QUERY, description = "filtro por pseudonimo")
             @RequestParam(name="filter", required = false)String filter);
+
+    @Operation(summary = "Combo de genero y tipo", tags = {ApiConstants.TAG_COMBO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = GeneroComboResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
+    @GetMapping("/genero")
+    GeneroComboResponse comboGenero();
 }

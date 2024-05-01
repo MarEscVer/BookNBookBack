@@ -3,7 +3,6 @@ package org.reader.low.booknbook.controller.object;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.sql.Blob;
 import java.sql.Date;
 
 @Builder
@@ -22,7 +21,7 @@ public class LibroObject {
 
     private Date fechaPublicacion;
 
-    private Blob fotoLibro;
+    private byte[] fotoLibro;
 
     private String saga;
 

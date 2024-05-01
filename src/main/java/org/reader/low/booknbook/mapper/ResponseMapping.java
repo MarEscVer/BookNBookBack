@@ -1,24 +1,22 @@
 package org.reader.low.booknbook.mapper;
 
+import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.config.security.SecurityUtils;
 import org.reader.low.booknbook.constants.Constants;
-import org.reader.low.booknbook.controller.object.GroupDescripcion;
-import org.reader.low.booknbook.controller.object.LibroObject;
-import org.reader.low.booknbook.controller.object.ModerateComments;
-import org.reader.low.booknbook.controller.object.NombreGrupos;
+import org.reader.low.booknbook.controller.object.*;
+import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListNameGrupoResponse;
 import org.reader.low.booknbook.model.bnb.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 import static org.reader.low.booknbook.utils.ApplicationUtils.verifyObjectInstance;
 
+@Slf4j
 public class ResponseMapping {
 
     public static AutorPerfilResponse mapToAutorPerfilResponse(Autor autor, List<LibroObject> listaLibros) {
@@ -54,24 +52,24 @@ public class ResponseMapping {
                 .build();
     }
 
-    public static ListGrupoResponse mapToListGroupResponse(List<Grupo> grupos) {
-        return ListGrupoResponse.builder().listGroup(listGroupDescription(grupos)).build();
+    public static ListGrupoResponse mapToListGroupResponse(List<Grupo> grupos, boolean needToken) {
+        return ListGrupoResponse.builder().listGroup(listGroupDescription(grupos, needToken)).build();
     }
 
-    public static List<GroupDescripcion> listGroupDescription(List<Grupo> grupos){
+    public static List<GroupDescripcion> listGroupDescription(List<Grupo> grupos, boolean needToken){
         return grupos.stream()
-                .map(ResponseMapping::mapToGroupDescription)
+                .map(grupo -> mapToGroupDescription(grupo, needToken))
                 .collect(toList());
     }
 
-    public static GroupDescripcion mapToGroupDescription(Grupo grupo) {
-        Map<String, String> genero = new HashMap<>();
+    public static GroupDescripcion mapToGroupDescription(Grupo grupo, boolean needToken) {
+        ComboGenero genero = null;
         if(verifyObjectInstance(grupo.getGenero())){
-            genero.put(grupo.getGenero().getNombre(), "Green");
+            genero = ComboGenero.builder().id(grupo.getGenero().getId()).nombre(grupo.getGenero().getNombre()).color("Green").build();
         }
-        Map<String, String> tipo = new HashMap<>();
+        ComboGenero tipo = null;
         if(verifyObjectInstance(grupo.getTipo())){
-            genero.put(grupo.getTipo().getNombre(), "Red");
+            tipo = ComboGenero.builder().id(grupo.getTipo().getId()).nombre(grupo.getTipo().getNombre()).color("Red").build();
         }
         return GroupDescripcion.builder()
                 .id(grupo.getId())
@@ -81,9 +79,12 @@ public class ResponseMapping {
                 .tipo(tipo)
                 .miembros(grupo.getUsuarioGrupo().size())
                 .perteneces(grupo.getUsuarioGrupo().stream()
+                        //comprobacion para no llamar al metodo que utiliza token siendo anonimo(llamada sin token)
                         .filter((UsuarioGrupo usuario) ->
-                                usuario.getUsuario().getNombreUsuario().equals(SecurityUtils.getUsername()))
-                        .toList().size()>0)
+                                needToken ?
+                                    usuario.getUsuario().getNombreUsuario().equals(SecurityUtils.getUsername()) :
+                            false
+                        ).toList().size()>0)
                 .imagen(grupo.getImagen())
                 .build();
     }
@@ -118,6 +119,24 @@ public class ResponseMapping {
                 .fechaDenuncia(valoracion.getDenuncia().getFecha())
                 .comentario(valoracion.getDenuncia().getTexto())
                 .motivo(valoracion.getDenuncia().getMotivo())
+                .build();
+    }
+
+    public static IdResponse mapToIdResponse(Long id, String message) {
+        return IdResponse.builder().id(id).message(message).build();
+    }
+
+
+    public static List<LibroDescripcion> mapToListLibroDescripcion(List<Libro> libros){
+        return libros.stream().map(ResponseMapping::mapToLibroDescripcion).toList();
+    }
+
+    public static LibroDescripcion mapToLibroDescripcion(Libro libro){
+        return LibroDescripcion.builder()
+                .imagen(libro.getFotoLibro())
+                .saga(libro.getSaga().getNombre())
+                .titulo(libro.getNombre())
+                .autor(libro.getAutor().getPseudonimo())
                 .build();
     }
 }

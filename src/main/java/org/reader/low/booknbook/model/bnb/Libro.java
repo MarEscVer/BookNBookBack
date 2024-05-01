@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Date;
 import java.util.List;
 import java.util.Set;
@@ -35,8 +34,9 @@ public class Libro implements Serializable {
     @Column(name = "pagTotal", nullable=false)
     private Integer pagTotal;
 
-    @Column(name = "fotoLibro")
-    private Blob fotoLibro;
+    @Lob
+    @Column(name = "fotoLibro", columnDefinition="LONGBLOB")
+    private byte[] fotoLibro;
 
     @ManyToOne(optional = false, /*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
     @JoinColumn(name = "id_autor")
