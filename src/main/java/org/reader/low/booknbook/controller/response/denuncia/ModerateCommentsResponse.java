@@ -12,5 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ModerateCommentsResponse {
 
-    List<ModerateComments> comentariosDenunciados;
+    private String estado;
+
+    private List<ModerateComments> comentariosDenunciados;
 }

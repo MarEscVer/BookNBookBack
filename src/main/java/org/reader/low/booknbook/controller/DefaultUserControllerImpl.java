@@ -7,6 +7,7 @@ import org.reader.low.booknbook.config.security.TokenResult;
 import org.reader.low.booknbook.controller.interfaz.DefaultUserController;
 import org.reader.low.booknbook.controller.request.usuario.LoginRequest;
 import org.reader.low.booknbook.controller.request.usuario.RegisterRequest;
+import org.reader.low.booknbook.controller.response.ContadorResponse;
 import org.reader.low.booknbook.controller.response.ListaLibrosRecomendadosResponse;
 import org.reader.low.booknbook.controller.response.LoginResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
@@ -33,7 +34,7 @@ public class DefaultUserControllerImpl implements DefaultUserController {
     private GrupoService grupoService;
 
     @Autowired
-    LibroService libroService;
+    private LibroService libroService;
 
     @Override
     public TokenResult token(AuthCredentials requestCredentials, boolean gen) {
@@ -52,19 +53,8 @@ public class DefaultUserControllerImpl implements DefaultUserController {
 
     @Override
     public ListaLibrosRecomendadosResponse listaLibrosRecomendados(Integer pageIndex, Integer size, String filter) {
-        return libroService.getListRecomendados(pageIndex, size, filter);
+         return libroService.getListRecomendados(pageIndex, size, filter);
     }
-
-    /*@Override
-    public ListaLibrosRecomendadosResponse listaGrupos(Integer pageIndex, Integer size, String filter) {
-
-        Pageable pageable = PageRequest.of(pageIndex, size);
-*//*
-        Page<ModerateComments> moderateComments = new PageImpl<ModerateComments>(
-                filteringListPage(denuncias, pageable),
-                pageable, denuncias.size());*//*
-        return null;
-    }*/
 
     @Override
     public ListGrupoResponse getListGrupos(Integer pageIndex, Integer size, String filter) {
@@ -72,6 +62,11 @@ public class DefaultUserControllerImpl implements DefaultUserController {
             filter = "";
         }
         return grupoService.getListGroup(pageIndex, size, filter, false);
+    }
+
+    @Override
+    public ContadorResponse contador() {
+        return userService.contador();
     }
 
 

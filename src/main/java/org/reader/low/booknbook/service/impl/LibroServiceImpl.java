@@ -63,7 +63,7 @@ public class LibroServiceImpl implements LibroService {
     }
 
     @Override
-    public void crearLibro(CreateLibroRequest request) {
+    public Libro crearLibro(CreateLibroRequest request) {
         Autor autor = null;
         Genero genero = null;
         Genero tipo = null;
@@ -86,17 +86,19 @@ public class LibroServiceImpl implements LibroService {
                 throw new BadRequestHanderException("crear_libro", "El autor que busca no se encuentra aun entre nuestros escritores");
             }
             Libro libro = mapToLibro(request, autor, genero, tipo, saga);
-            libroRepository.save(libro);
+            return libroRepository.save(libro);
     }
 
     @Override
     public ListaLibrosRecomendadosResponse getListRecomendados(Integer pageIndex, Integer size, String filter){
-        List<Libro> leidos = predicatesCriteria.librosMasLeidos(pageIndex, size);
-        List<Libro> recomendados = predicatesCriteria.librosRecomendados(filter, pageIndex, size);
+        List<Libro> leidos = predicatesCriteria.librosMasLeidos(pageIndex, size)
+                .stream().map(Valoracion::getLibro).toList();
+        List<Libro> recomendados = predicatesCriteria.librosRecomendados(filter, pageIndex, size)
+                .stream().map(Valoracion::getLibro).toList();
         List<Libro> novedades = predicatesCriteria.librosNovedades(filter, pageIndex, size);
         List<Libro> otros = libroRepository.findAll();
         Collections.shuffle(otros);
-        otros = otros.subList(0, 10);
+        otros = otros.subList(0, Math.min(otros.size(), 10));
         return ListaLibrosRecomendadosResponse.builder()
                 .masLeidos(mapToListLibroDescripcion(leidos))
                 .recomendados(mapToListLibroDescripcion(recomendados))

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface LibroController extends Controller {
 
-    @Operation(summary = "Puntuar un libro", tags = {ApiConstants.TAG_AUTOR})
+    @Operation(summary = "Puntuar un libro", tags = {ApiConstants.TAG_LIBRO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Void.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @PutMapping("/puntuar")

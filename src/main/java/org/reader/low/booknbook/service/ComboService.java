@@ -9,4 +9,8 @@ public interface ComboService {
     ComboResponse comboAutores(String filter);
 
     GeneroComboResponse comboGenero();
+
+    ComboResponse comboEstadoDenuncia(boolean comboComentarioGrupo);
+
+    ComboResponse comboMotivoDenuncia();
 }

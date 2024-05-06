@@ -1,6 +1,7 @@
 package org.reader.low.booknbook.config;
 
 import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.info.Contact;
@@ -47,9 +48,19 @@ public class OpenAPIConfig {
 
   private List<Tag> generateTags(){
     List<Tag> tags = new ArrayList<>();
-    tags.add(new Tag().name(ApiConstants.TAG_AUTOR).description("Endpoints que tratan al autor de los libros"));
-    tags.add(new Tag().name(ApiConstants.TAG_PUBLICO).description("Métodos que se usan sin token, ya que son necesarios para un uso mínimo"));
-    tags.add(new Tag().name(ApiConstants.TAG_GRUPO).description("Endpoints que tratan los grupos"));
+
+    tags.add(new Tag().name(ApiConstants.TAG_PUBLICO).description("Métodos que se usan sin token, ya que son necesarios para un uso mínimo").externalDocs(new ExternalDocumentation(
+    ).description("Documentacion Dominio publico").url("https://example.com")));
+    tags.add(new Tag().name(ApiConstants.TAG_AUTOR).description("Endpoints que tratan al autor de los libros").externalDocs(new ExternalDocumentation(
+    ).description("Documentacion Autor").url("https://example.com")));
+    tags.add(new Tag().name(ApiConstants.TAG_LIBRO).description("Endpoints que tratan los libros").externalDocs(new ExternalDocumentation(
+    ).description("Documentacion Libro").url("https://example.com")));
+    tags.add(new Tag().name(ApiConstants.TAG_GRUPO).description("Endpoints que tratan los grupos").externalDocs(new ExternalDocumentation(
+    ).description("Documentacion Grupo").url("https://example.com")));
+    tags.add(new Tag().name(ApiConstants.TAG_COMBO).description("Endpoints que devuelven combos para formularios").externalDocs(new ExternalDocumentation(
+    ).description("Documentacion Combo").url("https://example.com")));
+    tags.add(new Tag().name(ApiConstants.TAG_ADMIN).description("Endpoints que solo usan los admin").externalDocs(new ExternalDocumentation(
+    ).description("Documentacion Admin").url("https://example.com")));
     return tags;
   }
 

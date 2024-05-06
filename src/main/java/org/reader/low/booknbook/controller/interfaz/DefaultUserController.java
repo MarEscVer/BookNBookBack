@@ -11,6 +11,7 @@ import org.reader.low.booknbook.config.security.TokenResult;
 import org.reader.low.booknbook.constants.ApiConstants;
 import org.reader.low.booknbook.controller.request.usuario.LoginRequest;
 import org.reader.low.booknbook.controller.request.usuario.RegisterRequest;
+import org.reader.low.booknbook.controller.response.ContadorResponse;
 import org.reader.low.booknbook.controller.response.ListaLibrosRecomendadosResponse;
 import org.reader.low.booknbook.controller.response.LoginResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 public interface DefaultUserController extends Controller {
 
-    @Operation(summary = "Create a new user", tags = {ApiConstants.TAG_PUBLICO})
+    @Operation(summary = "Obtener el token de un usuario registrado", tags = {ApiConstants.TAG_PUBLICO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = TokenResult.class), mediaType = ApiConstants.JSON_RESPONSE) })
     @PostMapping("/token")
@@ -30,7 +31,7 @@ public interface DefaultUserController extends Controller {
             @RequestBody
             AuthCredentials requestCredentials, @RequestParam(name = "gen", required = true, defaultValue = "false") boolean gen);
 
-    @Operation(summary = "Create a new user", tags = {ApiConstants.TAG_PUBLICO})
+    @Operation(summary = "Crear un nuevo usuario", tags = {ApiConstants.TAG_PUBLICO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = void.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @PostMapping("/register")
@@ -38,7 +39,7 @@ public interface DefaultUserController extends Controller {
             @RequestBody
             RegisterRequest registerRequest);
 
-    @Operation(summary = "Validate that the user is registrered and login", tags = {ApiConstants.TAG_PUBLICO})
+    @Operation(summary = "Iniciar sesion con un usuario registrado", tags = {ApiConstants.TAG_PUBLICO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = LoginResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
     @PostMapping("/login")
@@ -70,5 +71,11 @@ public interface DefaultUserController extends Controller {
             @RequestParam(name="size") Integer size,
             @Parameter(name="filter", in = ParameterIn.QUERY, description = "valor para filtrar", example="5")
             @RequestParam(name="filter", required = false) String filter);
+
+    @Operation(summary = "Datos generales de la aplicacion", tags = {ApiConstants.TAG_PUBLICO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = ContadorResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
+    @PostMapping("/contador")
+    public ContadorResponse contador();
 
 }

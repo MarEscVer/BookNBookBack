@@ -29,10 +29,10 @@ public interface GrupoController extends Controller {
 
     @Operation(summary = "Poner imagen al grupo", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = void.class), mediaType = ApiConstants.JSON_RESPONSE),  })
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+            @Content(schema = @Schema(implementation = Void.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+    @PutMapping(value = "/{idGrupo}/imagen",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void createGroupImagen(
-            @Parameter(name="idGrupo", in = ParameterIn.QUERY, description = "Grupo al que se asigna la imagen", required = true, example="1")
+            @Parameter(name="idGrupo", in = ParameterIn.PATH, description = "Grupo al que se asigna la imagen", required = true, example="1")
             @RequestParam(name="idGrupo")Long idGrupo,
             @RequestPart MultipartFile imagen) throws IOException;
 

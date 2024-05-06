@@ -36,4 +36,22 @@ public interface ComboController extends Controller {
             @Content(schema = @Schema(implementation = GeneroComboResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
     @GetMapping("/genero")
     GeneroComboResponse comboGenero();
+
+    @Operation(summary = "Combo de estados de denuncia de un comentario", tags = {ApiConstants.TAG_COMBO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = ComboResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
+    @GetMapping("/denuncia/comentario/estado")
+    ComboResponse comboDenunciaComentario();
+
+    @Operation(summary = "Combo de estados de denuncia de un comentario en grupo", tags = {ApiConstants.TAG_COMBO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = ComboResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
+    @GetMapping("/denuncia/grupo/comentario/estado")
+    ComboResponse comboDenunciaGrupo();
+
+    @Operation(summary = "Combo motivos de la denuncia", tags = {ApiConstants.TAG_COMBO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = ComboResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
+    @GetMapping("/denuncia/motivo")
+    ComboResponse comboDenunciaMotivo();
 }

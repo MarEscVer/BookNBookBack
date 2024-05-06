@@ -5,18 +5,18 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.reader.low.booknbook.constants.ApiConstants;
-import org.reader.low.booknbook.controller.request.usuario.RegisterRequest;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface UserController extends Controller{
 
-    @Operation(summary = "Create a new user", tags = {ApiConstants.TAG_PUBLICO})
+    @Operation(summary = "Poner imagen al usuario", tags = {ApiConstants.TAG_ADMIN})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = void.class), mediaType = ApiConstants.JSON_RESPONSE),  })
-    @PostMapping("/register")
-    public void getUserList(
-            @RequestBody
-            RegisterRequest registerRequest);
-
+    @PutMapping(value = "/imagen",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    void crearAutorImagen(@RequestPart MultipartFile imagen) throws IOException;
 }

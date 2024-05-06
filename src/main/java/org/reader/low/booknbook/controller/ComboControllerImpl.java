@@ -35,4 +35,19 @@ public class ComboControllerImpl implements ComboController {
     public GeneroComboResponse comboGenero() {
         return comboService.comboGenero();
     }
+
+    @Override
+    public ComboResponse comboDenunciaComentario() {
+        return comboService.comboEstadoDenuncia(false);
+    }
+
+    @Override
+    public ComboResponse comboDenunciaGrupo() {
+        return comboService.comboEstadoDenuncia(true);
+    }
+
+    @Override
+    public ComboResponse comboDenunciaMotivo() {
+        return comboService.comboMotivoDenuncia();
+    }
 }

@@ -10,10 +10,13 @@ import org.reader.low.booknbook.config.security.TokenUtils;
 import org.reader.low.booknbook.config.security.UserDetailsImpl;
 import org.reader.low.booknbook.controller.request.usuario.LoginRequest;
 import org.reader.low.booknbook.controller.request.usuario.RegisterRequest;
+import org.reader.low.booknbook.controller.response.ContadorResponse;
 import org.reader.low.booknbook.controller.response.LoginResponse;
 import org.reader.low.booknbook.mapper.RepositoryMapping;
 import org.reader.low.booknbook.model.bnb.Usuario;
+import org.reader.low.booknbook.persistence.repository.GrupoRepository;
 import org.reader.low.booknbook.persistence.repository.UsuarioRepository;
+import org.reader.low.booknbook.persistence.repository.ValoracionRepository;
 import org.reader.low.booknbook.service.DefaultUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,6 +35,13 @@ public class DefaultUserServiceImpl implements DefaultUserService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private GrupoRepository grupoRepository;
+
+    @Autowired
+    private ValoracionRepository valoracionRepository;
+
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
@@ -74,5 +84,15 @@ public class DefaultUserServiceImpl implements DefaultUserService {
             throw new UnauthorizedHandlerException("generate_token", "La contraseña no pertenece al usuario '" +
                     requestCredentials.getUsername() + "'");
         }
+    }
+
+    @Override
+    public ContadorResponse contador() {
+        return ContadorResponse.builder()
+                .lectoresTotales(usuarioRepository.count())
+                .clubesCreados(grupoRepository.count())
+                .librosLeidos(valoracionRepository.countByEstado("LEIDO"))
+                .comentariosTotales(valoracionRepository.countByComentarioNotNull())
+                .build();
     }
 }

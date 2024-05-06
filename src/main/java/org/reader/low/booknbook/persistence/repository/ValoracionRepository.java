@@ -11,4 +11,9 @@ import java.util.List;
 public interface ValoracionRepository extends JpaRepository<Valoracion, IdValoracion> {
 
     List<Valoracion> findByDenunciaNotNullOrderByFechaComentarioDesc();
+
+    Long countByEstado(String estado);
+
+    Long countByComentarioNotNull();
+
 }

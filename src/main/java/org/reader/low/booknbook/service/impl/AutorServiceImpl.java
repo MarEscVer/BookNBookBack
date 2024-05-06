@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
 import org.reader.low.booknbook.controller.object.LibroObject;
 import org.reader.low.booknbook.controller.request.autor.CreateAutorRequest;
+import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
 import org.reader.low.booknbook.mapper.ResponseMapping;
 import org.reader.low.booknbook.model.bnb.Autor;
@@ -39,11 +40,13 @@ public class AutorServiceImpl implements AutorService {
     }
 
     @Override
-    public void crearAutor(CreateAutorRequest createAutorRequest) {
+    public IdResponse crearAutor(CreateAutorRequest createAutorRequest) {
         Optional<Autor> autorRegistrated = autorRepository.findByPseudonimo(createAutorRequest.getPseudonimo());
             if(autorRegistrated.isEmpty()){
                 Autor autor = mapToAutor(createAutorRequest);
-                autorRepository.save(autor);
+                Autor autorResponse = autorRepository.save(autor);
+                return IdResponse.builder().id(autorResponse.getId())
+                        .message("El autor "+ autorResponse.getPseudonimo() + " ha sido registrado correctamente").build();
             }else {
                 throw new BadRequestHanderException("autor_existe", "El autor que intenta registrar ya existe");
             }

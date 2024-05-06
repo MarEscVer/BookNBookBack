@@ -24,6 +24,7 @@ public class ApiConstants {
     public static final String TAG_PUBLICO = "Metodos de uso Público";
     public static final String TAG_ADMIN = "Administrador";
     public static final String TAG_COMBO = "Combos";
+    public static final String TAG_LIBRO = "Libro";
 
     private ApiConstants(){
         throw new IllegalStateException("ApiConstants class");

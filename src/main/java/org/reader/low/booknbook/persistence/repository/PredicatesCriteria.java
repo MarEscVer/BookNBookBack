@@ -1,21 +1,19 @@
 package org.reader.low.booknbook.persistence.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import org.reader.low.booknbook.model.bnb.Autor;
-import org.reader.low.booknbook.model.bnb.Grupo;
-import org.reader.low.booknbook.model.bnb.Libro;
+import jakarta.persistence.criteria.*;
+import lombok.extern.slf4j.Slf4j;
+import org.reader.low.booknbook.model.bnb.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@Slf4j
 public class PredicatesCriteria {
 
     @Autowired
@@ -47,53 +45,37 @@ public class PredicatesCriteria {
         return manager.createQuery(cq).getResultList();
     }
 
-    public List librosMasLeidos2(Integer pageIndex, Integer limit) {
-        CriteriaBuilder cb = manager.getCriteriaBuilder();
-        //CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
-        String sql = "SELECT l.id, l.descripcion, l.fecha_publicacion, l.foto_libro, l.nombre, l.pag_total, l.id_autor, l.id_genero, l.id_saga, l.id_tipo " +
-                "FROM valoracion as v join libro as l ON v.id_libro=l.id " +
-                "where v.estado='LEIDO' " +
-                "group by v.id_libro " +
-                "order by count(*) desc";
-        return manager.createQuery(sql)
-                //.setFirstResult(pageIndex).setMaxResults(limit)
-                .getResultList();
-    }
 
-    public List librosMasLeidos(Integer pageIndex, Integer limit) {
-        String sql = "SELECT `l.id`, `l.descripcion`, `l.fecha_publicacion`, `l.foto_libro`, `l.nombre`, `l.pag_total`, `l.id_autor`, `l.id_genero`, `l.id_saga`, `l.id_tipo` " +
-                "FROM `valoracion` as v join `libro` as l ON v.`id_libro`=l.`id` " +
-                "where v.`estado`='LEIDO' " +
-                "group by v.`id_libro` " +
-                "order by count(l.`id`) desc";
-        TypedQuery<Libro> query = manager.createQuery(sql, Libro.class);
-        return query.setFirstResult(pageIndex).setMaxResults(limit).getResultList();
-    }
-
-    public List librosRecomendados2(String genero, Integer pageIndex, Integer limit) {
+    public List<Valoracion> librosMasLeidos(Integer pageIndex, Integer limit) {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
-        //CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
-        String sql = "select l.id, l.descripcion, l.fecha_publicacion, l.foto_libro, l.nombre, l.pag_total, l.id_autor, l.id_genero, l.id_saga, l.id_tipo from valoracion as v join libro as l on v.id_libro = l.id " +
-                "join genero as g on l.id_genero = g.id ";
-                if(StringUtils.hasText(genero)){
-                    sql += "where g.nombre = :genero ";
-                }
-                sql += "order by v.calificacion_personal desc";
-        return manager.createQuery(sql).setParameter("genero", genero)
+        CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
+        Root<Valoracion> root = cq.from(Valoracion.class);
+        root.join("libro");
+        Predicate estadoLeido = cb.equal(root.get("estado"), "LEIDO");
+        cq.where(estadoLeido)
+                .groupBy(root.get("id").get("idLibro"))
+                .orderBy(cb.desc(cb.count(root)));
+        return manager.createQuery(cq)
                 .setFirstResult(pageIndex).setMaxResults(limit)
                 .getResultList();
     }
 
-    public List librosRecomendados(String genero, Integer pageIndex, Integer limit) {
-        String sql = "select l.id, l.descripcion, l.fecha_publicacion, l.foto_libro, l.nombre, l.pag_total, l.id_autor, l.id_genero, l.id_saga, l.id_tipo from valoracion as v join libro as l on v.id_libro = l.id " +
-                "join genero as g on l.id_genero = g.id ";
+    public List<Valoracion> librosRecomendados(String genero, Integer pageIndex, Integer limit) {
+        CriteriaBuilder cb = manager.getCriteriaBuilder();
+        CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
+        Root<Valoracion> root = cq.from(Valoracion.class);
+        Join<Valoracion, Genero> valoracionGeneroJoin = root.join("libro").join("genero");
+        List<Predicate> predicates = new ArrayList<>();
         if(StringUtils.hasText(genero)){
-            sql += "where g.nombre = :genero ";
+            predicates.add(cb.equal(valoracionGeneroJoin.get("nombre"), genero));
         }
-        sql += "order by v.calificacion_personal desc";
-
-        TypedQuery<Libro> query = manager.createQuery(sql, Libro.class);
-        return query.setParameter("genero", genero).setFirstResult(pageIndex).setMaxResults(limit).getResultList();
+        Expression mediaCalificacionPersonal = cb.avg(root.get("calificacionPersonal"));
+        cq.where(predicates.toArray((Predicate[]::new)))
+             .orderBy(cb.desc(mediaCalificacionPersonal))
+                .groupBy(root.get("id").get("idLibro"));
+        return manager.createQuery(cq)
+                .setFirstResult(pageIndex).setMaxResults(limit)
+                .getResultList();
     }
 
     public List librosNovedades2(String genero, Integer pageIndex, Integer limit) {
@@ -110,14 +92,20 @@ public class PredicatesCriteria {
                 .getResultList();
     }
 
-    public List librosNovedades(String genero, Integer pageIndex, Integer limit) {
-        String sql = "select l.id, l.descripcion, l.fecha_publicacion, l.foto_libro, l.nombre, l.pag_total, l.id_autor, l.id_genero, l.id_saga, l.id_tipo from libro as l join genero as g on l.id_genero = g.id " +
-                "join genero as g on l.id_genero = g.id ";
+    public List<Libro> librosNovedades(String genero, Integer pageIndex, Integer limit) {
+        CriteriaBuilder cb = manager.getCriteriaBuilder();
+        CriteriaQuery<Libro> cq = cb.createQuery(Libro.class);
+        Root<Libro> root = cq.from(Libro.class);
+        Join<Libro, Genero> libroGeneroJoin = root.join("genero");
+        List<Predicate> predicates = new ArrayList<>();
         if(StringUtils.hasText(genero)){
-            sql += "where g.nombre = :genero ";
+            predicates.add(cb.equal(libroGeneroJoin.get("nombre"), genero));
         }
-        sql += "order by fecha_publicacion desc";
-        TypedQuery<Libro> query = manager.createQuery(sql, Libro.class);
-        return query.setParameter("genero", genero).setFirstResult(pageIndex).setMaxResults(limit).getResultList();
+        Expression<Date> fechaPublicacion = root.get("fechaPublicacion");
+        cq.where(predicates.toArray((Predicate[]::new)))
+                .orderBy(cb.desc(fechaPublicacion));
+        return manager.createQuery(cq)
+                .setFirstResult(pageIndex).setMaxResults(limit)
+                .getResultList();
     }
 }
