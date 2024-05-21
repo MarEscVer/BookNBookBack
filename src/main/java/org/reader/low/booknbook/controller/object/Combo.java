@@ -11,7 +11,9 @@ import lombok.experimental.SuperBuilder;
 @Setter
 public class Combo {
 
+    @EqualsAndHashCode.Include
     private Long id;
 
+    @EqualsAndHashCode.Include
     private String nombre;
 }

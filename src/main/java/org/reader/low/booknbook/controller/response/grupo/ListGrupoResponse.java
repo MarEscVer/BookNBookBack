@@ -2,6 +2,7 @@ package org.reader.low.booknbook.controller.response.grupo;
 
 import lombok.*;
 import org.reader.low.booknbook.controller.object.GroupDescripcion;
+import org.reader.low.booknbook.controller.response.PaginationInfo;
 
 import java.util.List;
 
@@ -12,5 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ListGrupoResponse {
 
-    List<GroupDescripcion> listGroup;
+    private List<GroupDescripcion> listGroup;
+
+    private PaginationInfo pageInfo;
 }

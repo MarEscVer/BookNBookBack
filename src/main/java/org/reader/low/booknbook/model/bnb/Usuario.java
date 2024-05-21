@@ -3,9 +3,11 @@ package org.reader.low.booknbook.model.bnb;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "usuario")
@@ -36,7 +38,8 @@ public class Usuario implements Serializable {
     @Column(name = "correo", nullable=false)
     private String correo;
 
-    @Column(name = "rol", nullable=false, columnDefinition = "varchar(25) default 'NORMAL'")
+    @ColumnDefault(value = "'NORMAL'")
+    @Column(name = "rol", nullable=false)
     private String rol;
 
     @Column(name = "password", nullable=false)
@@ -44,31 +47,48 @@ public class Usuario implements Serializable {
     private String password;
 
     @Lob
-    @Column(name = "fotoPerfil", columnDefinition="LONGBLOB")
+    @Column(name = "fotoPerfil", columnDefinition = "LONGBLOB")
     private byte[] fotoPerfil;
 
-    @Column(name = "estado", nullable=false, columnDefinition = "boolean default true")
+    @Column(name = "estado", nullable=false, columnDefinition = "BOOLEAN default true")
     private boolean estado;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    private Set<PaginasLibro> paginasLibro;
+    private List<PaginasLibro> paginasLibro = new ArrayList<>();
 
     @OneToMany(mappedBy = "idSeguido", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    private Set<Seguimiento> seguido;
+    private List<Seguimiento> seguido = new ArrayList<>();
 
     @OneToMany(mappedBy = "idSeguidor", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    private Set<Seguimiento> seguidor;
+    private List<Seguimiento> seguidor = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    private Set<UsuarioGrupo> usuarioGrupo;
+    private List<UsuarioGrupo> usuarioGrupo = new ArrayList<>();
+
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    private List<Valoracion> valoracion = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    private Set<Valoracion> valoracion;
+    private List<ComentarioGrupo> comentarioGrupo = new ArrayList<>();
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    private Set<ComentarioGrupo> comentarioGrupo;
+    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JoinTable(name = "preferenciaUsuario",
+            joinColumns = @JoinColumn(name = "id_usuario", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_genero", referencedColumnName = "id"))
+    private List<Genero> preferenciaUsuario = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "preferenciaUsuario",fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    Set<Genero> preferenciaUsuario;
+    public void addPreferenciaUsuario(Genero genero){
+        if(preferenciaUsuario == null){
+            preferenciaUsuario = new ArrayList<>();
+        }
+        if(genero != null){
+            preferenciaUsuario.add(genero);
+        }
+    }
 
+    public void removePreferenciaUsuario(Genero genero) {
+        if(preferenciaUsuario != null && genero != null) {
+            preferenciaUsuario.remove(genero);
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package org.reader.low.booknbook.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
@@ -13,10 +12,12 @@ import org.reader.low.booknbook.persistence.repository.*;
 import org.reader.low.booknbook.service.ComboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @NoArgsConstructor
@@ -41,17 +42,19 @@ public class ComboServiceImpl implements ComboService {
 
     @Override
     public ComboResponse comboSagas(Long idAutor) {
-        try {
-            Autor autor = autorRepository.getReferenceById(idAutor);
-            List<Combo> combo = autor.getLibro().stream()
-                    .map(libro -> (Combo)Combo.builder().id(libro.getSaga().getId())
-                            .nombre(libro.getSaga().getNombre()).build())
-                    .distinct()
-                    .toList();
-            return ComboResponse.builder().valores(combo).build();
-        }catch (EntityNotFoundException e){
-            throw new BadRequestHanderException("combo_saga", "El autor que busca no se encuentra aun entre nuestros escritores");
-        }
+            Optional<Autor> autor = autorRepository.findById(idAutor);
+            if(autor.isPresent()){
+                Autor autorGet = autor.get();
+                List<Combo> combo = autorGet.getLibros().stream()
+                        .filter(libro -> !ObjectUtils.isEmpty(libro.getSaga()))
+                        .map(libro -> (Combo)Combo.builder().id(libro.getSaga().getId())
+                                .nombre(libro.getSaga().getNombre()).build())
+                        .distinct()
+                        .toList();
+                return ComboResponse.builder().valores(combo).build();
+            }else {
+                throw new BadRequestHanderException("combo_saga", "El autor que busca no se encuentra aun entre nuestros escritores");
+            }
     }
 
     @Override
@@ -77,9 +80,21 @@ public class ComboServiceImpl implements ComboService {
 
     @Override
     public ComboResponse comboEstadoDenuncia(boolean comboComentarioGrupo) {
-        List<Combo> comboList = denunciaRepository.findAllEstadosDistinct().stream()
+        Combo combo1 = Combo.builder().nombre("PENDIENTE").build();
+        Combo combo2 = Combo.builder().nombre("ACEPTADA").build();
+        Combo combo3 = Combo.builder().nombre("DENEGADA").build();
+        List<Combo> defaultCombos = Arrays.asList(combo1, combo2,combo3);
+        List<Combo> comboList = new ArrayList<>(denunciaRepository.findAllEstadosDistinct().stream()
                 .filter(estado -> comboComentarioGrupo == estado.contains("GRUPO_"))
-                .map(estado -> (Combo)Combo.builder().nombre(estado).build()).toList();
+                .map(estado -> (Combo) Combo.builder().nombre(estado).build()).toList());
+        for(Combo combo : defaultCombos){
+            if(comboComentarioGrupo){
+                combo.setNombre("GRUPO_"+combo.getNombre());
+            }
+            if(!comboList.contains(combo)){
+                comboList.add(combo);
+            }
+        }
         return ComboResponse.builder().valores(comboList).build();
     }
 

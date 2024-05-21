@@ -14,4 +14,8 @@ public class ApplicationUtils {
         long end = Math.min((pageable.getOffset() + pageable.getPageSize()), lista.size());
         return lista.subList((int)pageable.getOffset(), Math.toIntExact(end));
     }
+
+    /*public static Object isNull(Object objecto, Function<Object, Object> valor, Object valorAlternativo){
+        return Objects.isNull(objecto) ? valorAlternativo : valor;
+    }*/
 }

@@ -4,6 +4,7 @@ import org.reader.low.booknbook.controller.request.autor.CreateAutorRequest;
 import org.reader.low.booknbook.controller.request.grupo.CreateGroupRequest;
 import org.reader.low.booknbook.controller.request.libro.CreateLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.PuntuarLibroRequest;
+import org.reader.low.booknbook.controller.request.libro.UpdateLibroRequest;
 import org.reader.low.booknbook.controller.request.usuario.RegisterRequest;
 import org.reader.low.booknbook.model.bnb.*;
 import org.reader.low.booknbook.model.bnb.id.IdUsuarioGrupo;
@@ -11,6 +12,7 @@ import org.reader.low.booknbook.model.bnb.id.IdValoracion;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class RepositoryMapping {
 
@@ -21,6 +23,7 @@ public class RepositoryMapping {
                 .apellido1(register.getApellidoPrimero())
                 .apellido2(register.getApellidoSegundo())
                 .correo(register.getEmail())
+                .estado(true)
                 .password(new BCryptPasswordEncoder().encode(register.getPassword()))
                 .rol("NORMAL")
                 .build();
@@ -30,6 +33,7 @@ public class RepositoryMapping {
         return UsuarioGrupo.builder()
                 .id(new IdUsuarioGrupo(grupo.getId(), usuario.getId()))
                 .grupo(grupo).rol(rol).usuario(usuario)
+                .estado("ACTIVO")
                 .build();
     }
 
@@ -39,6 +43,7 @@ public class RepositoryMapping {
                 .tipo(createGroupRequest.getTipo() != null && createGroupRequest.getTipo() != 0 ? tipo : null)
                 .genero(createGroupRequest.getGenero() != null && createGroupRequest.getGenero() != 0 ? genero : null)
                 .descripcion(createGroupRequest.getDescripcion())
+                .estado("ACTIVO")
                 .build();
     }
 
@@ -54,22 +59,35 @@ public class RepositoryMapping {
                 .build();
     }
 
-    public static Libro mapToLibro(CreateLibroRequest request, Autor autor, Genero genero, Genero tipo, Saga saga) {
-        return Libro.builder()
+    public static Libro mapToLibro(CreateLibroRequest request, Libro.LibroBuilder libro) {
+        return libro
                 .descripcion(request.getDescripcion())
                 .fechaPublicacion(new Date(request.getFechaPublicacion().getTime()))
                 .nombre(request.getNombre())
                 .pagTotal(request.getPaginas())
-                .genero(genero)
-                .tipo(tipo)
-                .saga(saga)
-                .autor(autor)
                 .build();
+    }
+
+    public static Libro mapToLibro(UpdateLibroRequest request, Libro libro){
+        libro.setDescripcion(request.getDescripcion());
+        libro.setFechaPublicacion(new Date(request.getFechaPublicacion().getTime()));
+        libro.setNombre(request.getNombre());
+        libro.setPagTotal(request.getPagTotal());
+        libro.setEstado(request.getEstado());
+        return libro;
     }
 
     public static Autor mapToAutor(CreateAutorRequest createAutorRequest) {
         return Autor.builder().pseudonimo(createAutorRequest.getPseudonimo())
                 .biografia(createAutorRequest.getBiografia())
                 .localidad(createAutorRequest.getLocalidad()).build();
+    }
+
+    public static Valoracion mapToValoracion(Libro libro, Usuario usuario, String estado) {
+        return Valoracion.builder()
+                .id(IdValoracion.builder().idUsuario(usuario.getId()).idLibro(libro.getId()).build())
+                .estado(estado.toUpperCase()).libro(libro).usuario(usuario)
+                .fechaLectura(Date.valueOf(LocalDate.now()))
+                .build();
     }
 }

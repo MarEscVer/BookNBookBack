@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "genero")
@@ -28,21 +28,26 @@ public class Genero implements Serializable {
     private String tipo;
 
     @OneToMany(mappedBy = "genero")
-    private List<Libro> libroGenero;
+    private List<Libro> libroGenero = new ArrayList<>();
 
     @OneToMany(mappedBy = "genero")
-    private List<Libro> libroTipo;
+    private List<Libro> libroTipo = new ArrayList<>();
 
     @OneToMany(mappedBy = "genero", cascade=CascadeType.ALL)
-    private List<Grupo> grupoGenero;
+    private List<Grupo> grupoGenero = new ArrayList<>();
 
     @OneToMany(mappedBy = "genero", cascade=CascadeType.ALL)
-    private List<Grupo> grupoTipo;
+    private List<Grupo> grupoTipo = new ArrayList<>();
 
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(
-            name = "preferencia_usuario",
-            joinColumns = @JoinColumn(name = "id_usuario"),
-            inverseJoinColumns = @JoinColumn(name = "id_genero"))
-    Set<Usuario> preferenciaUsuario;
+    @ManyToMany(mappedBy = "preferenciaUsuario", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Usuario> preferenciaUsuario = new ArrayList<>();
+
+    public void addPreferenciaUsuario(Usuario usuario) {
+        if(preferenciaUsuario == null){
+            preferenciaUsuario = new ArrayList<>();
+        }
+        if(usuario != null){
+            preferenciaUsuario.add(usuario);
+        }
+    }
 }

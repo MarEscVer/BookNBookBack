@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,5 +25,5 @@ public class Saga implements Serializable {
     private String nombre;
 
     @OneToMany(mappedBy = "saga", cascade=CascadeType.ALL)
-    private List<Libro> libro;
+    private List<Libro> libro = new ArrayList<>();
 }

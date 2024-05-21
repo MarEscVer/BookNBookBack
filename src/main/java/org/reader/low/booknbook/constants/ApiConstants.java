@@ -19,6 +19,7 @@ public class ApiConstants {
     public static final String ERROR_MODEL = "#/components/schemas/errorModel";
     public static final String ERROR_CODE_CHARACTER = "character_not_valid";
 
+    public static final String TAG_USUARIO = "Usuario";
     public static final String TAG_AUTOR = "Autor";
     public static final String TAG_GRUPO = "Grupo";
     public static final String TAG_PUBLICO = "Metodos de uso Público";

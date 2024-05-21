@@ -57,6 +57,21 @@ public class DefaultUserControllerImpl implements DefaultUserController {
     }
 
     @Override
+    public ListaLibrosRecomendadosResponse listaLibrosNovedades(Integer pageIndex, Integer size, String genero) {
+        return libroService.getListLibrosNovedades(pageIndex, size, genero);
+    }
+
+    @Override
+    public ListaLibrosRecomendadosResponse listaLibrosLeidos(Integer pageIndex, Integer size, String genero) {
+        return libroService.getListLibrosLeidos(pageIndex, size, genero);
+    }
+
+    @Override
+    public ListaLibrosRecomendadosResponse listaLibrosAleatorios(Integer size, String genero) {
+        return libroService.getListLibrosAleatorios(size, genero);
+    }
+
+    @Override
     public ListGrupoResponse getListGrupos(Integer pageIndex, Integer size, String filter) {
         if (!StringUtils.hasText(filter)){
             filter = "";

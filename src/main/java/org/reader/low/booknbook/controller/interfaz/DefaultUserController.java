@@ -56,9 +56,46 @@ public interface DefaultUserController extends Controller {
             @RequestParam(name="pageIndex") Integer pageIndex,
             @Parameter(name="size", in = ParameterIn.QUERY, description = "El tamaño de la lista por página", required = true, example="5")
             @RequestParam(name="size") Integer size,
-            @Parameter(name="filter", in = ParameterIn.QUERY, description = "valor para filtrar", example="5")
-            @RequestParam(name="filter", required = false) String filter
+            @Parameter(name="genero", in = ParameterIn.QUERY, description = "Genero para filtrar", example="5")
+            @RequestParam(name="genero", required = false) String genero
             );
+
+    @Operation(summary = "Obtener los libros novedosos", tags = {ApiConstants.TAG_PUBLICO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = LoginResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
+    @GetMapping("/libros-novedades")
+    public ListaLibrosRecomendadosResponse listaLibrosNovedades(
+            @Parameter(name="pageIndex", in = ParameterIn.QUERY, description = "La página que quiere recuperar", required = true, example="0")
+            @RequestParam(name="pageIndex") Integer pageIndex,
+            @Parameter(name="size", in = ParameterIn.QUERY, description = "El tamaño de la lista por página", required = true, example="5")
+            @RequestParam(name="size") Integer size,
+            @Parameter(name="genero", in = ParameterIn.QUERY, description = "Genero para filtrar", example="5")
+            @RequestParam(name="genero", required = false) String genero
+    );
+
+    @Operation(summary = "Obtener los libros más leidos", tags = {ApiConstants.TAG_PUBLICO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = LoginResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
+    @GetMapping("/libros-mas-leidos")
+    public ListaLibrosRecomendadosResponse listaLibrosLeidos(
+            @Parameter(name="pageIndex", in = ParameterIn.QUERY, description = "La página que quiere recuperar", required = true, example="0")
+            @RequestParam(name="pageIndex") Integer pageIndex,
+            @Parameter(name="size", in = ParameterIn.QUERY, description = "El tamaño de la lista por página", required = true, example="5")
+            @RequestParam(name="size") Integer size,
+            @Parameter(name="genero", in = ParameterIn.QUERY, description = "Genero para filtrar", example="5")
+            @RequestParam(name="genero", required = false) String genero
+    );
+
+    @Operation(summary = "Obtener los libros aleatorios", tags = {ApiConstants.TAG_PUBLICO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = LoginResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
+    @GetMapping("/libros-propuestas")
+    public ListaLibrosRecomendadosResponse listaLibrosAleatorios(
+            @Parameter(name="size", in = ParameterIn.QUERY, description = "El tamaño de la lista por página", required = true, example="5")
+            @RequestParam(name="size") Integer size,
+            @Parameter(name="genero", in = ParameterIn.QUERY, description = "Genero para filtrar", example="5")
+            @RequestParam(name="genero", required = false) String genero
+    );
 
     @Operation(summary = "Obtener los grupos", tags = {ApiConstants.TAG_PUBLICO})
     @ApiResponse(responseCode = "200", content = {

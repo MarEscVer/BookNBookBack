@@ -7,9 +7,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.reader.low.booknbook.constants.ApiConstants;
+import org.reader.low.booknbook.controller.response.autor.AutorPerfilLibrosResponse;
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 public interface AutorController extends Controller {
 
@@ -19,5 +23,12 @@ public interface AutorController extends Controller {
     @GetMapping("/{idAutor}")
     public AutorPerfilResponse getperfilAutor(
             @Parameter(name="idAutor", in = ParameterIn.PATH, description = "El id del autor que se quiere recuperar", required = true, example="1")
-            @PathVariable(name="idAutor", required = true) Long idAutor);
+            @PathVariable(name="idAutor", required = true) Long idAutor) throws SQLException, IOException;
+
+    @Operation(summary = "Obtener los libros del Autor", tags = {ApiConstants.TAG_AUTOR})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AutorPerfilResponse.class), mediaType = ApiConstants.JSON_RESPONSE)})
+    @GetMapping("/{idAutor}/libros")
+    AutorPerfilLibrosResponse getperfilAutorLibros(@Parameter(name="idAutor", in = ParameterIn.PATH, description = "El id del autor que se quiere recuperar", required = true, example="1")
+                                                   @PathVariable(name="idAutor", required = true) Long idAutor) throws SQLException, IOException;
 }

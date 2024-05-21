@@ -25,12 +25,13 @@ public class Seguimiento implements Serializable {
     @Column(name = "seguido")
     private Integer seguido;
 
-    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+     
     @MapsId("idSeguidor")
     @JoinColumn(name = "id_seguidor")
     private Usuario idSeguidor;
 
-    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @MapsId("idSeguido")
     @JoinColumn(name = "id_seguido")
     private Usuario idSeguido;

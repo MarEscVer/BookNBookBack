@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,7 @@ public class Denuncia implements Serializable {
     @Column(name = "motivo", nullable=false)
     private String motivo;
 
+    @Lob
     @Column(name = "texto", columnDefinition = "TEXT")
     private String texto;
 
@@ -33,9 +35,9 @@ public class Denuncia implements Serializable {
     private String estado;
 
     @OneToMany(mappedBy = "denuncia", cascade=CascadeType.ALL)
-    private List<ComentarioGrupo> comentarioGrupo;
+    private List<ComentarioGrupo> comentarioGrupo = new ArrayList<>();
 
     @OneToMany(mappedBy = "denuncia", cascade=CascadeType.ALL)
-    private List<Valoracion> valoracion;
+    private List<Valoracion> valoracion = new ArrayList<>();
 
 }

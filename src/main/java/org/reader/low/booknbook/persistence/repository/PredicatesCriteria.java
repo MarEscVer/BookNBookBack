@@ -46,13 +46,19 @@ public class PredicatesCriteria {
     }
 
 
-    public List<Valoracion> librosMasLeidos(Integer pageIndex, Integer limit) {
+    public List<Valoracion> librosMasLeidos(String genero, Integer pageIndex, Integer limit) {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
         Root<Valoracion> root = cq.from(Valoracion.class);
-        root.join("libro");
-        Predicate estadoLeido = cb.equal(root.get("estado"), "LEIDO");
-        cq.where(estadoLeido)
+        Join<Valoracion, Genero> valoracionGeneroJoin = root.join("libro").join("genero");
+        Join<Valoracion, Genero> valoracionTipoJoin = root.join("libro").join("tipo");
+        List<Predicate> predicates = new ArrayList<>();
+        if(StringUtils.hasText(genero)){
+            predicates.add(cb.or(cb.equal(valoracionGeneroJoin.get("nombre"), genero),
+                    cb.equal(valoracionTipoJoin.get("nombre"), genero)));
+        }
+        predicates.add(cb.equal(root.get("estado"), "LEIDO"));
+        cq.where(predicates.toArray((Predicate[]::new)))
                 .groupBy(root.get("id").get("idLibro"))
                 .orderBy(cb.desc(cb.count(root)));
         return manager.createQuery(cq)
@@ -65,9 +71,11 @@ public class PredicatesCriteria {
         CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
         Root<Valoracion> root = cq.from(Valoracion.class);
         Join<Valoracion, Genero> valoracionGeneroJoin = root.join("libro").join("genero");
+        Join<Valoracion, Genero> valoracionTipoJoin = root.join("libro").join("tipo");
         List<Predicate> predicates = new ArrayList<>();
         if(StringUtils.hasText(genero)){
-            predicates.add(cb.equal(valoracionGeneroJoin.get("nombre"), genero));
+            predicates.add(cb.or(cb.equal(valoracionGeneroJoin.get("nombre"), genero),
+                    cb.equal(valoracionTipoJoin.get("nombre"), genero)));
         }
         Expression mediaCalificacionPersonal = cb.avg(root.get("calificacionPersonal"));
         cq.where(predicates.toArray((Predicate[]::new)))
@@ -78,34 +86,39 @@ public class PredicatesCriteria {
                 .getResultList();
     }
 
-    public List librosNovedades2(String genero, Integer pageIndex, Integer limit) {
-        CriteriaBuilder cb = manager.getCriteriaBuilder();
-        //CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
-        String sql = "select l.id, l.descripcion, l.fecha_publicacion, l.foto_libro, l.nombre, l.pag_total, l.id_autor, l.id_genero, l.id_saga, l.id_tipo from libro as l join genero as g on l.id_genero = g.id " +
-                "join genero as g on l.id_genero = g.id ";
-        if(StringUtils.hasText(genero)){
-            sql += "where g.nombre = :genero ";
-        }
-        sql += "order by fecha_publicacion desc";
-        return manager.createQuery(sql).setParameter("genero", genero)
-                .setFirstResult(pageIndex).setMaxResults(limit)
-                .getResultList();
-    }
-
     public List<Libro> librosNovedades(String genero, Integer pageIndex, Integer limit) {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Libro> cq = cb.createQuery(Libro.class);
         Root<Libro> root = cq.from(Libro.class);
         Join<Libro, Genero> libroGeneroJoin = root.join("genero");
+        Join<Libro, Genero> libroTipoJoin = root.join("tipo");
         List<Predicate> predicates = new ArrayList<>();
         if(StringUtils.hasText(genero)){
-            predicates.add(cb.equal(libroGeneroJoin.get("nombre"), genero));
+            predicates.add(cb.or(cb.equal(libroGeneroJoin.get("nombre"), genero),
+                    cb.equal(libroTipoJoin.get("nombre"), genero)));
         }
         Expression<Date> fechaPublicacion = root.get("fechaPublicacion");
         cq.where(predicates.toArray((Predicate[]::new)))
                 .orderBy(cb.desc(fechaPublicacion));
         return manager.createQuery(cq)
                 .setFirstResult(pageIndex).setMaxResults(limit)
+                .getResultList();
+    }
+
+    public List<Usuario> usuariosActivos(String username, Integer pageIndex, Integer limit){
+        CriteriaBuilder cb = manager.getCriteriaBuilder();
+        CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class);
+        Root<Usuario> root = cq.from(Usuario.class);
+        List<Predicate> predicates = new ArrayList<>();
+        if(StringUtils.hasText(username)){
+            predicates.add(cb.or(cb.like(root.get("nombreUsuario").as(String.class), "%" + username + "%"),
+                    cb.like(root.get("nombre").as(String.class), "%" + username + "%")
+                    ));
+        }
+        predicates.add(cb.equal(root.get("estado").as(Boolean.class), true));
+        cq.where(predicates.toArray((Predicate[]::new)));
+        return manager.createQuery(cq)
+                //.setFirstResult(pageIndex).setMaxResults(limit)
                 .getResultList();
     }
 }

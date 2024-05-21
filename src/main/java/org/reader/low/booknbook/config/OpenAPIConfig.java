@@ -59,6 +59,8 @@ public class OpenAPIConfig {
     ).description("Documentacion Grupo").url("https://example.com")));
     tags.add(new Tag().name(ApiConstants.TAG_COMBO).description("Endpoints que devuelven combos para formularios").externalDocs(new ExternalDocumentation(
     ).description("Documentacion Combo").url("https://example.com")));
+    tags.add(new Tag().name(ApiConstants.TAG_USUARIO).description("Endpoints que tratan los usuarios").externalDocs(new ExternalDocumentation(
+    ).description("Documentacion Usuario").url("https://example.com")));
     tags.add(new Tag().name(ApiConstants.TAG_ADMIN).description("Endpoints que solo usan los admin").externalDocs(new ExternalDocumentation(
     ).description("Documentacion Admin").url("https://example.com")));
     return tags;

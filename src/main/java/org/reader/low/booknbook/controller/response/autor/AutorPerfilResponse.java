@@ -1,9 +1,6 @@
 package org.reader.low.booknbook.controller.response.autor;
 
 import lombok.*;
-import org.reader.low.booknbook.controller.object.LibroObject;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +14,4 @@ public class AutorPerfilResponse {
     private String pseudonimo;
 
     private String biografia;
-
-    private List<LibroObject> libros;
 }

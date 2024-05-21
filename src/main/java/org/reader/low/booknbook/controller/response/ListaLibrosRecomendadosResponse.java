@@ -12,11 +12,9 @@ import java.util.List;
 @Setter
 public class ListaLibrosRecomendadosResponse {
 
-    List<LibroDescripcion> masLeidos;
+    private String filterName;
 
-    List<LibroDescripcion> recomendados;
+    private List<LibroDescripcion> libros;
 
-    List<LibroDescripcion> novedades;
-
-    List<LibroDescripcion> listaFiltro;
+    private PaginationInfo pageInfo;
 }

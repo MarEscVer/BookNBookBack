@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @NoArgsConstructor
 @RestController
 @CrossOrigin(origins = {"*"})
-@RequestMapping("/api/combo")
+@RequestMapping("/combo")
 public class ComboControllerImpl implements ComboController {
 
     @Autowired

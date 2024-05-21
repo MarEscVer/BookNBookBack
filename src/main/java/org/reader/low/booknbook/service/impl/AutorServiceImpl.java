@@ -1,12 +1,11 @@
 package org.reader.low.booknbook.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
-import org.reader.low.booknbook.controller.object.LibroObject;
 import org.reader.low.booknbook.controller.request.autor.CreateAutorRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
+import org.reader.low.booknbook.controller.response.autor.AutorPerfilLibrosResponse;
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
 import org.reader.low.booknbook.mapper.ResponseMapping;
 import org.reader.low.booknbook.model.bnb.Autor;
@@ -15,7 +14,8 @@ import org.reader.low.booknbook.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToAutor;
@@ -29,12 +29,11 @@ public class AutorServiceImpl implements AutorService {
     private AutorRepository autorRepository;
 
     @Override
-    public AutorPerfilResponse getAutorPerfil(Long idAutor) {
-        Autor autor = autorRepository.getReferenceById(idAutor);
-        try {
-            List<LibroObject> listaLibros = ResponseMapping.mapToListLibroObject(autor);
-            return ResponseMapping.mapToAutorPerfilResponse(autor, listaLibros);
-        }catch (EntityNotFoundException e){
+    public AutorPerfilResponse getAutorPerfil(Long idAutor) throws SQLException, IOException {
+        Optional<Autor> autor = autorRepository.findById(idAutor);
+        if(autor.isPresent()){
+            return ResponseMapping.mapToAutorPerfilResponse(autor.get());
+        } else {
             throw new BadRequestHanderException("autor_perfil", "No existe el autor seleccionado");
         }
     }
@@ -52,7 +51,14 @@ public class AutorServiceImpl implements AutorService {
             }
     }
 
-
-
-
+    @Override
+    public AutorPerfilLibrosResponse getAutorPerfilLibros(Long idAutor) {
+        Optional<Autor> autor = autorRepository.findById(idAutor);
+        if(autor.isPresent()){
+            return ResponseMapping.
+                    mapToAutorPerfilLibrosResponse(ResponseMapping.mapToListLibroObject(autor.get()));
+        }else{
+            throw new BadRequestHanderException("autor_perfil", "No existe el autor seleccionado");
+        }
+    }
 }

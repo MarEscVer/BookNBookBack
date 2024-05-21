@@ -22,12 +22,12 @@ public class PaginasLibro implements Serializable {
     @Column(name = "paginasLeidas")
     private Integer paginasLeidas;
 
-    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @MapsId("idLibro")
     @JoinColumn(name = "id_libro")
     private Libro libro;
 
-    @ManyToOne(/*fetch = FetchType.LAZY,*/ cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @MapsId("idUsuario")
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;

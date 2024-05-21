@@ -29,6 +29,7 @@ public class Valoracion implements Serializable {
     @Column(name = "calificacionPersonal")
     private Integer calificacionPersonal;
 
+    @Lob
     @Column(name = "comentario", columnDefinition = "TEXT")
     private String comentario;
 
@@ -38,16 +39,16 @@ public class Valoracion implements Serializable {
     @Column(name = "fechaLectura")
     private Date fechaLectura;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinColumn(name = "id_denuncia")
     private Denuncia denuncia;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @MapsId("idUsuario")
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @MapsId("idLibro")
     @JoinColumn(name = "id_libro")
     private Libro libro;

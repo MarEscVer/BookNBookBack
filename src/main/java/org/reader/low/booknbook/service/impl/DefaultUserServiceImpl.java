@@ -13,7 +13,9 @@ import org.reader.low.booknbook.controller.request.usuario.RegisterRequest;
 import org.reader.low.booknbook.controller.response.ContadorResponse;
 import org.reader.low.booknbook.controller.response.LoginResponse;
 import org.reader.low.booknbook.mapper.RepositoryMapping;
+import org.reader.low.booknbook.model.bnb.Genero;
 import org.reader.low.booknbook.model.bnb.Usuario;
+import org.reader.low.booknbook.persistence.repository.GeneroRepository;
 import org.reader.low.booknbook.persistence.repository.GrupoRepository;
 import org.reader.low.booknbook.persistence.repository.UsuarioRepository;
 import org.reader.low.booknbook.persistence.repository.ValoracionRepository;
@@ -42,12 +44,20 @@ public class DefaultUserServiceImpl implements DefaultUserService {
     @Autowired
     private ValoracionRepository valoracionRepository;
 
+    @Autowired
+    private GeneroRepository generoRepository;
+
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
         Usuario usuarioLogin = usuarioRepository.findByNombreUsuario(loginRequest.getUsername())
                 .orElseThrow(()->new UnauthorizedHandlerException("usuario_validation",
                         "El usuario introducido no pertenece a la comunidad BookNBook"));
+        if(!usuarioLogin.isEstado()){
+            usuarioLogin.setEstado(true);
+            usuarioRepository.save(usuarioLogin);
+            throw new UnauthorizedHandlerException("usuario_reactivate", "Se ha vuelto a activar el usuario");
+        }
 
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         if (bcrypt.matches(loginRequest.getPassword(), usuarioLogin.getPassword())) {
@@ -65,6 +75,15 @@ public class DefaultUserServiceImpl implements DefaultUserService {
             throw new BadRequestHanderException("register_usuarioExistente", "Usuario ya registrado.");
         }else{
             Usuario registro = RepositoryMapping.mapToUsuarioRegister(registerRequest);
+            registro = usuarioRepository.save(registro);
+            if(registerRequest.getIdGenero()  != null && registerRequest.getIdGenero() != 0){
+                Genero genero = generoRepository.getReferenceById(registerRequest.getIdGenero());
+                registro.addPreferenciaUsuario(genero);
+            }
+            if(registerRequest.getIdTipo()  != null && registerRequest.getIdTipo() != 0){
+                Genero tipo = generoRepository.getReferenceById(registerRequest.getIdTipo());
+                registro.addPreferenciaUsuario(tipo);
+            }
             usuarioRepository.save(registro);
         }
     }

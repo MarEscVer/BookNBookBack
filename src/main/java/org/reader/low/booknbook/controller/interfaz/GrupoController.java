@@ -25,22 +25,22 @@ public interface GrupoController extends Controller {
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = IdResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @PostMapping
-    public IdResponse createGroup(@RequestBody CreateGroupRequest createGroupRequest) throws IOException;
+    IdResponse createGroup(@RequestBody CreateGroupRequest createGroupRequest) throws IOException;
 
     @Operation(summary = "Poner imagen al grupo", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Void.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+            @Content(schema = @Schema(implementation = void.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @PutMapping(value = "/{idGrupo}/imagen",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void createGroupImagen(
             @Parameter(name="idGrupo", in = ParameterIn.PATH, description = "Grupo al que se asigna la imagen", required = true, example="1")
-            @RequestParam(name="idGrupo")Long idGrupo,
+            @PathVariable(name="idGrupo")Long idGrupo,
             @RequestPart MultipartFile imagen) throws IOException;
 
     @Operation(summary = "Obtener los grupos que el usuario tiene", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = ListNameGrupoResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @GetMapping("/mis-clubes")
-    public ListNameGrupoResponse getListGroup(
+    ListNameGrupoResponse getListGroup(
             @Parameter(name="type", in = ParameterIn.QUERY, description = "Tipo de lista que quiere obtener", required = true, example="P")
             @Pattern(regexp = "P|A")
             @RequestParam(name="type", required = true) String type,
@@ -53,7 +53,7 @@ public interface GrupoController extends Controller {
 
     @Operation(summary = "Obtener los grupos", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = ListNameGrupoResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+            @Content(schema = @Schema(implementation = ListGrupoResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @GetMapping("/clubes")
     ListGrupoResponse getListGrupos(
             @Parameter(name="pageIndex", in = ParameterIn.QUERY, description = "La página que quiere recuperar", required = true, example="0")
@@ -63,11 +63,11 @@ public interface GrupoController extends Controller {
             @Parameter(name="filter", in = ParameterIn.QUERY, description = "valor para filtrar", example="5")
             @RequestParam(name="filter", required = false) String filter);
 
-    @Operation(summary = "Obtener los grupos que el usuario tiene", tags = {ApiConstants.TAG_GRUPO})
+    @Operation(summary = "Borrar el grupo seleccionado", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = ListNameGrupoResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+            @Content(schema = @Schema(implementation = DeleteResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @DeleteMapping("/{idGrupo}")
-    public DeleteResponse deleteMyGroup(
+    DeleteResponse deleteMyGroup(
             @Parameter(name="idGrupo", in = ParameterIn.PATH, description = "El grupo que quiere eliminar", example="1")
-            @RequestParam(name="idGrupo", required = true) Long idGrupo);
+            @PathVariable(name="idGrupo") Long idGrupo);
 }
