@@ -13,6 +13,10 @@ public class PerfilUsuario {
 
     private String nombre;
 
+    private String apellidoUno;
+
+    private String apellidoDos;
+
     private String username;
 
     private String genero;

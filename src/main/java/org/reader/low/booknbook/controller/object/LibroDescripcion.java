@@ -9,6 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 public class LibroDescripcion {
 
+    private Long id;
+
     private byte[] imagen;
 
     private String saga;

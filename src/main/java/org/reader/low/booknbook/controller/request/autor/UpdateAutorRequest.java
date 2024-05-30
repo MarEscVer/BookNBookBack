@@ -1,4 +1,4 @@
-package org.reader.low.booknbook.controller.response.autor;
+package org.reader.low.booknbook.controller.request.autor;
 
 import lombok.*;
 
@@ -7,15 +7,13 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AutorPerfilResponse {
+public class UpdateAutorRequest {
 
     private Long id;
 
-    private byte[] imagen;
-
     private String pseudonimo;
 
-    private String biografia;
-
     private String localidad;
+
+    private String biografia;
 }

@@ -27,16 +27,16 @@ public class Genero implements Serializable {
     @Column(name = "tipo", nullable=false)
     private String tipo;
 
-    @OneToMany(mappedBy = "genero")
+    @OneToMany(mappedBy = "genero",fetch = FetchType.EAGER)
     private List<Libro> libroGenero = new ArrayList<>();
 
-    @OneToMany(mappedBy = "genero")
+    @OneToMany(mappedBy = "genero",fetch = FetchType.EAGER)
     private List<Libro> libroTipo = new ArrayList<>();
 
-    @OneToMany(mappedBy = "genero", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "genero", cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Grupo> grupoGenero = new ArrayList<>();
 
-    @OneToMany(mappedBy = "genero", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "genero", cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Grupo> grupoTipo = new ArrayList<>();
 
     @ManyToMany(mappedBy = "preferenciaUsuario", cascade=CascadeType.ALL, fetch = FetchType.EAGER)

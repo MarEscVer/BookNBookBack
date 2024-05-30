@@ -11,6 +11,7 @@ import org.reader.low.booknbook.controller.request.libro.PuntuarLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.UpdateLibroRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.ListaLibrosRecomendadosResponse;
+import org.reader.low.booknbook.controller.response.libro.LibroPerfil;
 import org.reader.low.booknbook.controller.response.libro.ListLibroGestionResponse;
 import org.reader.low.booknbook.controller.response.usuario.PerfilUsuarioLibrosFavoritosResponse;
 import org.reader.low.booknbook.controller.response.valoracion.ValoracionResponse;
@@ -28,16 +29,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToLibro;
 import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToValoracion;
-import static org.reader.low.booknbook.mapper.ResponseMapping.mapToListLibroDescripcion;
-import static org.reader.low.booknbook.mapper.ResponseMapping.mapToValoracionResponse;
+import static org.reader.low.booknbook.mapper.ResponseMapping.*;
 import static org.reader.low.booknbook.utils.ApplicationUtils.filteringListPage;
 
 @Slf4j
@@ -91,34 +88,38 @@ public class LibroServiceImpl implements LibroService {
     }
 
     @Override
-    public void crearLibro(CreateLibroRequest request) {
+    public IdResponse crearLibro(CreateLibroRequest request) {
         Optional<Autor> autor;
-        Optional<Genero> genero = Optional.empty();
-        Optional<Genero> tipo = Optional.empty();
-        Saga saga = null;
+        Optional<Saga> saga = Optional.empty();
+        Saga sagaGet = null;
         Libro libro = Libro.builder().build();
         libro = mapToLibro(request, libro.toBuilder());
         if(request.getGenero() != null && request.getGenero() != 0){
-            genero = generoRepository.findById(request.getGenero());
-            libro.setGenero(genero.orElse(null));
+            libro.setGenero(generoRepository.findById(request.getGenero()).orElse(null));
         }
         if(request.getTipo() != null && request.getTipo() != 0){
-            tipo = generoRepository.findById(request.getTipo());
-            libro.setTipo(tipo.orElse(null));
+            libro.setTipo(generoRepository.findById(request.getTipo()).orElse(null));
         }
         if (StringUtils.hasText(request.getNuevaSaga())) {
-            saga = sagaRepository.save(Saga.builder().nombre(request.getNuevaSaga()).build());
+            sagaGet = sagaRepository.save(Saga.builder().nombre(request.getNuevaSaga()).build());
         } else if(request.getSaga() != null && request.getSaga() != 0){
-            saga = sagaRepository.findById(request.getSaga()).get();
+            saga = sagaRepository.findById(request.getSaga());
         }
-        libro.setSaga(saga);
+        libro.setSaga(saga.orElse(sagaGet));
         autor = autorRepository.findById(request.getIdAutor());
-        Libro finalLibro = libro;
-        Autor autorGet = null;
         if(autor.isPresent()){
-            autor.get().addLibro(finalLibro);
-            autorGet = autorRepository.save(autor.get());
+            Autor autorGet = autor.get();
+            //autorGet.addLibro(libro);
+            //autorGet = autorRepository.save(autorGet);
+            libro.setAutor(autorGet);
+            libro = libroRepository.save(libro);
+            Optional<Libro> libNew = autorGet.getLibros().stream().filter(lib -> request.getNombre().equals(lib.getNombre())).findFirst();
+            /*if(libNew.isPresent()){
+                return IdResponse.builder().id(libNew.get().getId()).message("Libro creado correctamente").build();
+            }*/
+            return IdResponse.builder().id(libro.getId()).message("Libro creado correctamente").build();
         }
+        return null;
     }
 
     @Override
@@ -212,10 +213,11 @@ public class LibroServiceImpl implements LibroService {
         Optional<Libro> libro = libroRepository.findById(request.getId());
         if(libro.isPresent()){
             Libro libroGet = libro.get();
+            mapToLibro(request, libroGet);
             if (request.getSaga() != null && request.getSaga() != 0) {
                 Optional<Saga> saga = sagaRepository.findById(request.getSaga());
                 libroGet.setSaga(saga.orElse(null));
-            }else{
+            }else if(request.getSaga() == null){
                 libroGet.setSaga(null);
             }
             String  mensaje = "Libro Actualizado Correctamente";
@@ -237,7 +239,7 @@ public class LibroServiceImpl implements LibroService {
             }else{
                 libroGet.setTipo(null);
             }
-            libroGet = mapToLibro(request, libroGet);
+
             libroGet = libroRepository.save(libroGet);
             return IdResponse.builder().id(libroGet.getId()).message(mensaje).build();
         }
@@ -304,4 +306,16 @@ public class LibroServiceImpl implements LibroService {
         return PerfilUsuarioLibrosFavoritosResponse.builder()
                 .libros(new ArrayList<>()).pageInfo(ResponseMapping.mapToPaginationInfo(pageable, new ArrayList())).build();
     }
+
+    @Override
+    public LibroPerfil getLibroPerfil(Long idLibro) {
+        Optional<Libro> libro = libroRepository.findById(idLibro);
+        if(libro.isPresent()){
+            return mapToLibroPerfil(libro.get());
+        }
+        return LibroPerfil.builder()
+                .build();
+    }
+
+
 }

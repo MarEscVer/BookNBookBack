@@ -8,11 +8,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.reader.low.booknbook.constants.ApiConstants;
 import org.reader.low.booknbook.controller.request.autor.CreateAutorRequest;
+import org.reader.low.booknbook.controller.request.autor.UpdateAutorRequest;
 import org.reader.low.booknbook.controller.request.libro.CreateLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.UpdateLibroRequest;
 import org.reader.low.booknbook.controller.request.usuario.RolRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
-import org.reader.low.booknbook.controller.response.MessageResponse;
 import org.reader.low.booknbook.controller.response.denuncia.MessageValoracion;
 import org.reader.low.booknbook.controller.response.denuncia.ModerateCommentsResponse;
 import org.reader.low.booknbook.controller.response.libro.ListLibroGestionResponse;
@@ -28,9 +28,9 @@ public interface AdminController extends Controller {
 
     @Operation(summary = "Crear un nuevo libro", tags = {ApiConstants.TAG_ADMIN})
     @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+            @Content(schema = @Schema(implementation = IdResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @PostMapping("/libro")
-    MessageResponse crearLibro(@RequestBody CreateLibroRequest createLibroRequest);
+    IdResponse crearLibro(@RequestBody CreateLibroRequest createLibroRequest);
 
     @Operation(summary = "Poner imagen al libro", tags = {ApiConstants.TAG_ADMIN})
     @ApiResponse(responseCode = "200", content = {
@@ -46,6 +46,12 @@ public interface AdminController extends Controller {
             @Content(schema = @Schema(implementation = IdResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @PostMapping("/autor")
     IdResponse crearAutor(@RequestBody CreateAutorRequest createAutorRequest);
+
+    @Operation(summary = "Actualizar un autor", tags = {ApiConstants.TAG_ADMIN})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = IdResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+    @PutMapping("/autor")
+    IdResponse updateAutor(UpdateAutorRequest updateAutorRequest);
 
     @Operation(summary = "Poner imagen al autor", tags = {ApiConstants.TAG_ADMIN})
     @ApiResponse(responseCode = "200", content = {

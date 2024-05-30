@@ -37,11 +37,9 @@ public class RepositoryMapping {
                 .build();
     }
 
-    public static Grupo mapToGroup(CreateGroupRequest createGroupRequest, Genero genero, Genero tipo) {
+    public static Grupo mapToGroup(CreateGroupRequest createGroupRequest) {
         return Grupo.builder()
                 .nombre(createGroupRequest.getNombreGrupo())
-                .tipo(createGroupRequest.getTipo() != null && createGroupRequest.getTipo() != 0 ? tipo : null)
-                .genero(createGroupRequest.getGenero() != null && createGroupRequest.getGenero() != 0 ? genero : null)
                 .descripcion(createGroupRequest.getDescripcion())
                 .estado("ACTIVO")
                 .build();

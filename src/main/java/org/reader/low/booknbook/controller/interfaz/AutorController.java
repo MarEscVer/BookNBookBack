@@ -17,18 +17,4 @@ import java.sql.SQLException;
 
 public interface AutorController extends Controller {
 
-    @Operation(summary = "Obtener los datos del perfil del Autor", tags = {ApiConstants.TAG_AUTOR})
-    @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = AutorPerfilResponse.class), mediaType = ApiConstants.JSON_RESPONSE)})
-    @GetMapping("/{idAutor}")
-    public AutorPerfilResponse getperfilAutor(
-            @Parameter(name="idAutor", in = ParameterIn.PATH, description = "El id del autor que se quiere recuperar", required = true, example="1")
-            @PathVariable(name="idAutor", required = true) Long idAutor) throws SQLException, IOException;
-
-    @Operation(summary = "Obtener los libros del Autor", tags = {ApiConstants.TAG_AUTOR})
-    @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = AutorPerfilResponse.class), mediaType = ApiConstants.JSON_RESPONSE)})
-    @GetMapping("/{idAutor}/libros")
-    AutorPerfilLibrosResponse getperfilAutorLibros(@Parameter(name="idAutor", in = ParameterIn.PATH, description = "El id del autor que se quiere recuperar", required = true, example="1")
-                                                   @PathVariable(name="idAutor", required = true) Long idAutor) throws SQLException, IOException;
-}
+    }

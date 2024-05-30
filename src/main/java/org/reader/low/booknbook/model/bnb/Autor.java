@@ -33,13 +33,28 @@ public class Autor implements Serializable {
     @Column(name = "biografia")
     private String biografia;
 
-    @OneToMany(mappedBy = "autor",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "autor",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Libro> libros = new ArrayList<>();
 
     public void addLibro(Libro libro){
         if(libro != null){
             libro.setAutor(this);
             libros.add(libro);
+        }
+    }
+
+    public void deleteLibro(Libro libro) {
+        if(libro != null && libro.getId() != null) {
+            libros.remove(libro);
+        }
+    }
+
+    public void updateLibro(Libro libro) {
+        if(libro != null && libro.getId() != null) {
+            libros.stream().forEach( libro1 -> {
+                if(libro.getId() == libro1.getId()){
+                    libro1 = libro;
+                }});
         }
     }
 }

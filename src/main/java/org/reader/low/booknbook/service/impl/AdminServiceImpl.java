@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
 import org.reader.low.booknbook.controller.object.ModerateComments;
 import org.reader.low.booknbook.controller.request.autor.CreateAutorRequest;
+import org.reader.low.booknbook.controller.request.autor.UpdateAutorRequest;
 import org.reader.low.booknbook.controller.request.libro.CreateLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.UpdateLibroRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
-import org.reader.low.booknbook.controller.response.MessageResponse;
 import org.reader.low.booknbook.controller.response.denuncia.MessageValoracion;
 import org.reader.low.booknbook.controller.response.libro.ListLibroGestionResponse;
 import org.reader.low.booknbook.controller.response.usuario.UserInfoResponse;
@@ -57,9 +57,9 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public MessageResponse createLibro(CreateLibroRequest createLibroRequest) {
-        libroService.crearLibro(createLibroRequest);
-        return MessageResponse.builder().message("Libro creado Correctamente").build();
+    public IdResponse createLibro(CreateLibroRequest createLibroRequest) {
+        return libroService.crearLibro(createLibroRequest);
+        //return MessageResponse.builder().message("Libro creado Correctamente").build();
     }
 
     @Override
@@ -120,5 +120,10 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public IdResponse updateLibro(UpdateLibroRequest request){
         return libroService.updateLibro(request);
+    }
+
+    @Override
+    public IdResponse updateAutor(UpdateAutorRequest updateAutorRequest) {
+        return autorService.updateAutor(updateAutorRequest);
     }
 }

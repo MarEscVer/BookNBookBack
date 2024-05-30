@@ -48,10 +48,10 @@ public class Grupo implements Serializable {
     @OneToMany(mappedBy = "grupo",fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private List<UsuarioGrupo> usuarioGrupo = new ArrayList<>();
 
-    @OneToMany(mappedBy = "grupo", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "grupo", cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     private List<LibroGrupo> libroGrupo = new ArrayList<>();
 
-    @OneToMany(mappedBy = "grupo", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "grupo", cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     private List<ComentarioGrupo> comentarioGrupo = new ArrayList<>();
 
 

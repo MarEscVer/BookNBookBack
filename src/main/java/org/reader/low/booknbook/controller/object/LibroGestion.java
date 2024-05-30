@@ -2,12 +2,16 @@ package org.reader.low.booknbook.controller.object;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class LibroGestion {
+
+    private Long id;
 
     private byte[] imagen;
 
@@ -21,5 +25,5 @@ public class LibroGestion {
 
     private String tipo;
 
-    private Integer year;
+    private Date year;
 }

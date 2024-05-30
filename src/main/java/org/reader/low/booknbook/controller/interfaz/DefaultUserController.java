@@ -14,12 +14,15 @@ import org.reader.low.booknbook.controller.request.usuario.RegisterRequest;
 import org.reader.low.booknbook.controller.response.ContadorResponse;
 import org.reader.low.booknbook.controller.response.ListaLibrosRecomendadosResponse;
 import org.reader.low.booknbook.controller.response.LoginResponse;
+import org.reader.low.booknbook.controller.response.autor.AutorPerfilLibrosResponse;
+import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListNameGrupoResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.reader.low.booknbook.controller.response.libro.LibroPerfil;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 public interface DefaultUserController extends Controller {
 
@@ -46,6 +49,14 @@ public interface DefaultUserController extends Controller {
     public LoginResponse loginUser(
             @RequestBody
             LoginRequest loginRequest);
+
+    @Operation(summary = "Obtener el perfil de un libro", tags = {ApiConstants.TAG_PUBLICO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = LibroPerfil.class), mediaType = ApiConstants.JSON_RESPONSE) })
+    @GetMapping("/libro/{idLibro}")
+    LibroPerfil getLibroPerfil(
+            @Parameter(name="idLibro", in = ParameterIn.PATH, description = "Libro al que se asigna la imagen", required = true, example="1")
+            @PathVariable(name="idLibro")Long idLibro);
 
     @Operation(summary = "Obtener los libros recomendados", tags = {ApiConstants.TAG_PUBLICO})
     @ApiResponse(responseCode = "200", content = {
@@ -114,5 +125,22 @@ public interface DefaultUserController extends Controller {
             @Content(schema = @Schema(implementation = ContadorResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
     @PostMapping("/contador")
     public ContadorResponse contador();
+
+    @Operation(summary = "Obtener los datos del perfil del Autor", tags = {ApiConstants.TAG_AUTOR})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AutorPerfilResponse.class), mediaType = ApiConstants.JSON_RESPONSE)})
+    @GetMapping("/autor/{idAutor}")
+    public AutorPerfilResponse getperfilAutor(
+            @Parameter(name="idAutor", in = ParameterIn.PATH, description = "El id del autor que se quiere recuperar", required = true, example="1")
+            @PathVariable(name="idAutor", required = true) Long idAutor) throws SQLException, IOException;
+
+    @Operation(summary = "Obtener los libros del Autor", tags = {ApiConstants.TAG_AUTOR})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AutorPerfilResponse.class), mediaType = ApiConstants.JSON_RESPONSE)})
+    @GetMapping("/autor/{idAutor}/libros")
+    AutorPerfilLibrosResponse getperfilAutorLibros(
+            @Parameter(name="idAutor", in = ParameterIn.PATH, description = "El id del autor que se quiere recuperar", required = true, example="1")
+            @PathVariable(name="idAutor", required = true) Long idAutor) throws SQLException, IOException;
+
 
 }

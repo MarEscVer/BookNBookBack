@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.controller.interfaz.AdminController;
 import org.reader.low.booknbook.controller.object.ModerateComments;
 import org.reader.low.booknbook.controller.request.autor.CreateAutorRequest;
+import org.reader.low.booknbook.controller.request.autor.UpdateAutorRequest;
 import org.reader.low.booknbook.controller.request.libro.CreateLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.UpdateLibroRequest;
 import org.reader.low.booknbook.controller.request.usuario.RolRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
-import org.reader.low.booknbook.controller.response.MessageResponse;
 import org.reader.low.booknbook.controller.response.denuncia.MessageValoracion;
 import org.reader.low.booknbook.controller.response.denuncia.ModerateCommentsResponse;
 import org.reader.low.booknbook.controller.response.libro.ListLibroGestionResponse;
@@ -44,7 +44,7 @@ public class AdminControllerImpl implements AdminController {
     private UserService userService;
 
     @Override
-    public MessageResponse crearLibro(CreateLibroRequest createLibroRequest) {
+    public IdResponse crearLibro(CreateLibroRequest createLibroRequest) {
         return adminService.createLibro(createLibroRequest);
     }
 
@@ -55,6 +55,9 @@ public class AdminControllerImpl implements AdminController {
 
     @Override
     public IdResponse crearAutor(CreateAutorRequest createAutorRequest){ return adminService.createAutor(createAutorRequest);}
+
+    @Override
+    public IdResponse updateAutor(UpdateAutorRequest updateAutorRequest){ return adminService.updateAutor(updateAutorRequest);}
 
     @Override
     public void crearAutorImagen(Long idAutor, MultipartFile imagen) throws IOException, SQLException {

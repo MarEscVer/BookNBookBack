@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
 import org.reader.low.booknbook.controller.request.autor.CreateAutorRequest;
+import org.reader.low.booknbook.controller.request.autor.UpdateAutorRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilLibrosResponse;
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
@@ -60,5 +61,19 @@ public class AutorServiceImpl implements AutorService {
         }else{
             throw new BadRequestHanderException("autor_perfil", "No existe el autor seleccionado");
         }
+    }
+
+    @Override
+    public IdResponse updateAutor(UpdateAutorRequest updateAutorRequest) {
+        Optional<Autor> autor = autorRepository.findById(updateAutorRequest.getId());
+        if(autor.isPresent()){
+            Autor autorGet = autor.get();
+            autorGet.setBiografia(updateAutorRequest.getBiografia());
+            autorGet.setLocalidad(updateAutorRequest.getLocalidad());
+            autorGet.setPseudonimo(updateAutorRequest.getPseudonimo());
+            autorGet = autorRepository.save(autorGet);
+            return IdResponse.builder().id(autorGet.getId()).message("Autor Actualizado Correctamente").build();
+        }
+        return IdResponse.builder().id(null).message("Error al Actualizar el Autor").build();
     }
 }

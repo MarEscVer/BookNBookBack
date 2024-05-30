@@ -2,10 +2,10 @@ package org.reader.low.booknbook.service;
 
 import org.reader.low.booknbook.controller.object.ModerateComments;
 import org.reader.low.booknbook.controller.request.autor.CreateAutorRequest;
+import org.reader.low.booknbook.controller.request.autor.UpdateAutorRequest;
 import org.reader.low.booknbook.controller.request.libro.CreateLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.UpdateLibroRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
-import org.reader.low.booknbook.controller.response.MessageResponse;
 import org.reader.low.booknbook.controller.response.denuncia.MessageValoracion;
 import org.reader.low.booknbook.controller.response.libro.ListLibroGestionResponse;
 import org.reader.low.booknbook.controller.response.usuario.UserInfoResponse;
@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface AdminService {
-    MessageResponse createLibro(CreateLibroRequest createLibroRequest);
+    IdResponse createLibro(CreateLibroRequest createLibroRequest);
     IdResponse createAutor(CreateAutorRequest createAutorRequest);
     List<ModerateComments> listaComentariosDenunciados(Integer pageIndex, Integer size, String filter, String estado);
     void estadoDenuncia(Long idDenuncia, String estado);
@@ -26,4 +26,5 @@ public interface AdminService {
     UserInfoResponse getUsuarioInfo(String username, Integer pageIndex, Integer size);
     ListLibroGestionResponse getListLibros(Integer pageIndex, Integer size, String filtro);
     IdResponse updateLibro(UpdateLibroRequest request);
+    IdResponse updateAutor(UpdateAutorRequest updateAutorRequest);
 }

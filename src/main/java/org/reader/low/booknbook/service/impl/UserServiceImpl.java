@@ -109,6 +109,8 @@ public class UserServiceImpl implements UserService {
                     .tipo(usuarioGet.getPreferenciaUsuario() != null ? usuarioGet.getPreferenciaUsuario().stream().filter(genero -> "TIPO".equals(genero.getTipo())).map(Genero::getNombre).findFirst().orElse(null) : null)
                     .imagenPerfil(usuarioGet.getFotoPerfil())
                     .nombre(usuarioGet.getNombre())
+                    .apellidoUno(usuarioGet.getApellido1())
+                    .apellidoDos(usuarioGet.getApellido2())
                     .build();
         } else{
             throw new BadRequestHanderException("usuario_existe","El usuario no pertenece a nuestra comunidad");

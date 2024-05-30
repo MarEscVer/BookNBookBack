@@ -10,6 +10,7 @@ import org.reader.low.booknbook.controller.response.autor.AutorPerfilLibrosRespo
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListNameGrupoResponse;
+import org.reader.low.booknbook.controller.response.libro.LibroPerfil;
 import org.reader.low.booknbook.controller.response.usuario.UserInfoResponse;
 import org.reader.low.booknbook.controller.response.valoracion.ValoracionResponse;
 import org.reader.low.booknbook.model.bnb.*;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,9 +32,11 @@ public class ResponseMapping {
 
     public static AutorPerfilResponse mapToAutorPerfilResponse(Autor autor) throws SQLException, IOException {
         return AutorPerfilResponse.builder()
+                .id(autor.getId())
                 .pseudonimo(autor.getPseudonimo())
                 .imagen(autor.getFotoAutor())
                 .biografia(autor.getBiografia())
+                .localidad(autor.getLocalidad())
                 .build();
     }
 
@@ -71,6 +75,29 @@ public class ResponseMapping {
     public static ListGrupoResponse mapToListGroupResponse(List<Grupo> grupos, PaginationInfo pageInfo, boolean needToken) {
         return ListGrupoResponse.builder().listGroup(listGroupDescription(grupos, needToken))
                 .pageInfo(pageInfo).build();
+    }
+
+    public static LibroPerfil mapToLibroPerfil(Libro libro) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(libro.getFechaPublicacion());
+        return LibroPerfil.builder()
+                .id(libro.getId())
+                .titulo(libro.getNombre())
+                .saga(libro.getSaga() != null ? libro.getSaga().getNombre() : null)
+                .idAutor(libro.getAutor() != null ? libro.getAutor().getId() : 0)
+                .autor(libro.getAutor() != null ? libro.getAutor().getPseudonimo() : null)
+                .imagen(libro.getFotoLibro())
+                .paginasTotales(libro.getPagTotal())
+                .anyo(libro.getFechaPublicacion())
+                .genero(libro.getGenero() != null ? libro.getGenero().getNombre() : null)
+                .tipo(libro.getTipo() != null ? libro.getTipo().getNombre() : null)
+                .calificacionMedia(libro.getValoracion().size() > 0  ?
+                        libro.getValoracion().stream()
+                                .map(Valoracion::getCalificacionPersonal)
+                                .reduce(0, Integer::sum)/libro.getValoracion().size() :
+                        0)
+                .descripcion(libro.getDescripcion())
+                .build();
     }
 
     public static List<GroupDescripcion> listGroupDescription(List<Grupo> grupos, boolean needToken){
@@ -124,7 +151,7 @@ public class ResponseMapping {
                 .idGrupo(grupo.getId())
                 .imagen(grupo.getImagen())
                 //Si es lista de administradas, es lider(puede eliminar) SIR
-                .administrador(Constants.A.equals(type) && userGrupo.getRol().equals("SIR"))
+                .administrador(Constants.A.equals(type) && "SIR".equals(userGrupo.getRol()))
                 .build();
     }
 
@@ -151,6 +178,7 @@ public class ResponseMapping {
 
     public static LibroDescripcion mapToLibroDescripcion(Libro libro){
         return LibroDescripcion.builder()
+                .id(libro.getId())
                 .imagen(libro.getFotoLibro())
                 .saga(Objects.isNull(libro.getSaga()) ? null : libro.getSaga().getNombre())
                 .titulo(libro.getNombre())
@@ -204,13 +232,14 @@ public class ResponseMapping {
 
     private static LibroGestion mapToLibroGestion(Libro libro) {
         return LibroGestion.builder()
+                .id(libro.getId())
                 .imagen(libro.getFotoLibro())
                 .saga(libro.getSaga() != null ? libro.getSaga().getNombre() : null)
                 .titulo(libro.getNombre())
                 .autor(libro.getAutor() != null ? libro.getAutor().getPseudonimo() : "Anonimo")
                 .genero(libro.getGenero() != null ? libro.getGenero().getNombre() : null)
                 .tipo(libro.getTipo() != null ? libro.getTipo().getNombre() : null)
-                .year(libro.getFechaPublicacion().getYear())
+                .year(libro.getFechaPublicacion())
                 .build();
     }
 

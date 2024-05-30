@@ -35,6 +35,4 @@ public class LibroControllerImpl implements LibroController {
     public ValoracionResponse actualizarLibroValoracion(ValoracionResponse request) {
         return libroService.actualizarLibroValoracion(request);
     }
-
-
 }

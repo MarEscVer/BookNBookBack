@@ -24,6 +24,6 @@ public class Saga implements Serializable {
     @Column(name = "nombre", nullable=false)
     private String nombre;
 
-    @OneToMany(mappedBy = "saga", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "saga", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Libro> libro = new ArrayList<>();
 }

@@ -10,7 +10,11 @@ import org.reader.low.booknbook.controller.request.usuario.RegisterRequest;
 import org.reader.low.booknbook.controller.response.ContadorResponse;
 import org.reader.low.booknbook.controller.response.ListaLibrosRecomendadosResponse;
 import org.reader.low.booknbook.controller.response.LoginResponse;
+import org.reader.low.booknbook.controller.response.autor.AutorPerfilLibrosResponse;
+import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
+import org.reader.low.booknbook.controller.response.libro.LibroPerfil;
+import org.reader.low.booknbook.service.AutorService;
 import org.reader.low.booknbook.service.DefaultUserService;
 import org.reader.low.booknbook.service.GrupoService;
 import org.reader.low.booknbook.service.LibroService;
@@ -19,6 +23,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 @Slf4j
 @NoArgsConstructor
@@ -36,6 +43,9 @@ public class DefaultUserControllerImpl implements DefaultUserController {
     @Autowired
     private LibroService libroService;
 
+    @Autowired
+    private AutorService autorService;
+
     @Override
     public TokenResult token(AuthCredentials requestCredentials, boolean gen) {
         return userService.getTokenResult(requestCredentials, gen);
@@ -49,6 +59,11 @@ public class DefaultUserControllerImpl implements DefaultUserController {
     @Override
     public LoginResponse loginUser(LoginRequest loginRequest) {
         return userService.login(loginRequest);
+    }
+
+    @Override
+    public LibroPerfil getLibroPerfil(Long idLibro){
+        return libroService.getLibroPerfil(idLibro);
     }
 
     @Override
@@ -84,5 +99,13 @@ public class DefaultUserControllerImpl implements DefaultUserController {
         return userService.contador();
     }
 
+    @Override
+    public AutorPerfilResponse getperfilAutor(Long idAutor) throws SQLException, IOException {
+        return autorService.getAutorPerfil(idAutor);
+    }
 
+    @Override
+    public AutorPerfilLibrosResponse getperfilAutorLibros(Long idAutor) throws SQLException, IOException {
+        return autorService.getAutorPerfilLibros(idAutor);
+    }
 }

@@ -50,8 +50,8 @@ public class PredicatesCriteria {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
         Root<Valoracion> root = cq.from(Valoracion.class);
-        Join<Valoracion, Genero> valoracionGeneroJoin = root.join("libro").join("genero");
-        Join<Valoracion, Genero> valoracionTipoJoin = root.join("libro").join("tipo");
+        Join<Valoracion, Genero> valoracionGeneroJoin = root.join("libro").join("genero", JoinType.LEFT);
+        Join<Valoracion, Genero> valoracionTipoJoin = root.join("libro").join("tipo", JoinType.LEFT);
         List<Predicate> predicates = new ArrayList<>();
         if(StringUtils.hasText(genero)){
             predicates.add(cb.or(cb.equal(valoracionGeneroJoin.get("nombre"), genero),
@@ -70,8 +70,8 @@ public class PredicatesCriteria {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
         Root<Valoracion> root = cq.from(Valoracion.class);
-        Join<Valoracion, Genero> valoracionGeneroJoin = root.join("libro").join("genero");
-        Join<Valoracion, Genero> valoracionTipoJoin = root.join("libro").join("tipo");
+        Join<Valoracion, Genero> valoracionGeneroJoin = root.join("libro").join("genero", JoinType.LEFT);
+        Join<Valoracion, Genero> valoracionTipoJoin = root.join("libro").join("tipo", JoinType.LEFT);
         List<Predicate> predicates = new ArrayList<>();
         if(StringUtils.hasText(genero)){
             predicates.add(cb.or(cb.equal(valoracionGeneroJoin.get("nombre"), genero),
@@ -90,8 +90,8 @@ public class PredicatesCriteria {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Libro> cq = cb.createQuery(Libro.class);
         Root<Libro> root = cq.from(Libro.class);
-        Join<Libro, Genero> libroGeneroJoin = root.join("genero");
-        Join<Libro, Genero> libroTipoJoin = root.join("tipo");
+        Join<Libro, Genero> libroGeneroJoin = root.join("genero", JoinType.LEFT);
+        Join<Libro, Genero> libroTipoJoin = root.join("tipo", JoinType.LEFT);
         List<Predicate> predicates = new ArrayList<>();
         if(StringUtils.hasText(genero)){
             predicates.add(cb.or(cb.equal(libroGeneroJoin.get("nombre"), genero),

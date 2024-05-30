@@ -58,13 +58,24 @@ public class GrupoServiceImpl implements GrupoService {
 
     @Override
     public IdResponse createGroup(CreateGroupRequest createGroupRequest) throws IOException {
-        Optional<Genero> genero = generoRepository.findById(createGroupRequest.getGenero());
-        Optional<Genero> tipo = generoRepository.findById(createGroupRequest.getTipo());
-        Grupo grupo = mapToGroup(createGroupRequest, genero.orElse(null), tipo.orElse(null));
-        Grupo grupoSaved = grupoRepository.save(grupo);
+        Optional<Genero> tipo = Optional.empty();
+        Optional<Genero> genero = Optional.empty();
+        Grupo grupo = mapToGroup(createGroupRequest);
+        grupo = grupoRepository.save(grupo);
+        if(createGroupRequest.getGenero() != null && createGroupRequest.getGenero() != 0){
+            genero = generoRepository.findById(createGroupRequest.getGenero());
+            grupo.setGenero(genero.orElse(null));
+        }
+        if(createGroupRequest.getGenero() != null && createGroupRequest.getGenero() != 0){
+           tipo = generoRepository.findById(createGroupRequest.getTipo());
+           grupo.setTipo(tipo.orElse(null));
+        }
+        grupo = grupoRepository.save(grupo);
+
         Usuario usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
-        usuarioGrupoRepository.save(mapToUsuarioGrupo(grupoSaved, usuario, "SIR"));
-        return mapToIdResponseGrupo(grupoSaved);
+
+        usuarioGrupoRepository.save(mapToUsuarioGrupo(grupo, usuario, "SIR"));
+        return mapToIdResponseGrupo(grupo);
     }
 
     @Override
@@ -101,6 +112,8 @@ public class GrupoServiceImpl implements GrupoService {
         if(Constants.A.equals(type)) {
             userGroupList = userGroupList.stream()
                     .filter(simple -> !"NORMAL".equals(simple.getRol())).toList();
+        }else if(Constants.P.equals(type)){
+            userGroupList = userGroupList.stream().filter(usuarioGrupo -> "ACTIVO".equals(usuarioGrupo.getGrupo().getEstado())).toList();
         }
         //usar el filtro por id o descripcion o nombre
         userGroupList = userGroupList.stream()
