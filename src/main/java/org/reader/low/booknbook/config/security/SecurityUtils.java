@@ -17,11 +17,11 @@ public class SecurityUtils {
     }
 
 
-    public static String getNombre() { return ((String)((Claims)getUserDetails().getCredentials()).get("name")); }
+    public static String getNombre() { return getUserDetails() != null ?  ((String)((Claims)getUserDetails().getCredentials()).get("name")): null; }
 
-    public static String getUsername() { return (String)getUserDetails().getPrincipal(); }
+    public static String getUsername() { return getUserDetails() != null ? (String)getUserDetails().getPrincipal() : null; }
 
     public static String getRol() {
-        return ((String)((Claims)getUserDetails().getCredentials()).get("rol"));
+        return getUserDetails() != null ? ((String)((Claims)getUserDetails().getCredentials()).get("rol")) : null;
     }
 }

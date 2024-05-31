@@ -5,6 +5,7 @@ import org.reader.low.booknbook.controller.request.libro.PuntuarLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.UpdateLibroRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.ListaLibrosRecomendadosResponse;
+import org.reader.low.booknbook.controller.response.libro.ComentarioPerfilLibroResponse;
 import org.reader.low.booknbook.controller.response.libro.LibroPerfil;
 import org.reader.low.booknbook.controller.response.libro.ListLibroGestionResponse;
 import org.reader.low.booknbook.controller.response.usuario.PerfilUsuarioLibrosFavoritosResponse;
@@ -35,4 +36,6 @@ public interface LibroService {
     PerfilUsuarioLibrosFavoritosResponse getListLibrosFavoritosUsuario(Integer pageIndex, Integer size, String username, String filtro);
 
     LibroPerfil getLibroPerfil(Long idLibro);
+
+    ComentarioPerfilLibroResponse getComentariosLibro(Long idLibro, Integer pageIndex, Integer size);
 }

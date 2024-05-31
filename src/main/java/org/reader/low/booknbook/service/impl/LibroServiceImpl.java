@@ -6,11 +6,13 @@ import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
 import org.reader.low.booknbook.config.security.SecurityUtils;
 import org.reader.low.booknbook.controller.object.LibroDescripcion;
 import org.reader.low.booknbook.controller.object.LibroFavorito;
+import org.reader.low.booknbook.controller.object.ValoracionUsuario;
 import org.reader.low.booknbook.controller.request.libro.CreateLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.PuntuarLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.UpdateLibroRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.ListaLibrosRecomendadosResponse;
+import org.reader.low.booknbook.controller.response.libro.ComentarioPerfilLibroResponse;
 import org.reader.low.booknbook.controller.response.libro.LibroPerfil;
 import org.reader.low.booknbook.controller.response.libro.ListLibroGestionResponse;
 import org.reader.low.booknbook.controller.response.usuario.PerfilUsuarioLibrosFavoritosResponse;
@@ -29,7 +31,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.sql.Date;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToLibro;
@@ -106,17 +111,13 @@ public class LibroServiceImpl implements LibroService {
             saga = sagaRepository.findById(request.getSaga());
         }
         libro.setSaga(saga.orElse(sagaGet));
-        autor = autorRepository.findById(request.getIdAutor());
+        autor = autorRepository.findById(request.getAutor());
         if(autor.isPresent()){
             Autor autorGet = autor.get();
-            //autorGet.addLibro(libro);
-            //autorGet = autorRepository.save(autorGet);
             libro.setAutor(autorGet);
             libro = libroRepository.save(libro);
             Optional<Libro> libNew = autorGet.getLibros().stream().filter(lib -> request.getNombre().equals(lib.getNombre())).findFirst();
-            /*if(libNew.isPresent()){
-                return IdResponse.builder().id(libNew.get().getId()).message("Libro creado correctamente").build();
-            }*/
+
             return IdResponse.builder().id(libro.getId()).message("Libro creado correctamente").build();
         }
         return null;
@@ -224,19 +225,19 @@ public class LibroServiceImpl implements LibroService {
             if(request.getAutor() != null && request.getAutor() != 0) {
                 Optional<Autor> autor = autorRepository.findById(request.getAutor());
                 libroGet.setAutor(autor.orElse(null));
-            }else {
+            }else if(request.getAutor() == null){
                 mensaje += ". El autor no se ha actualizado porque no se ha señalado ninguno";
             }
             if(request.getGenero() != null && request.getGenero() != 0) {
                 Optional<Genero> genero = generoRepository.findById(request.getGenero());
                 libroGet.setGenero(genero.orElse(null));
-            }else {
+            }else if(request.getGenero() == null){
                 libroGet.setGenero(null);
             }
             if(request.getTipo() != null && request.getTipo() != 0) {
                 Optional<Genero> tipo = generoRepository.findById(request.getTipo());
                 libroGet.setTipo(tipo.orElse(null));
-            }else{
+            }else if(request.getTipo() == null){
                 libroGet.setTipo(null);
             }
 
@@ -311,10 +312,44 @@ public class LibroServiceImpl implements LibroService {
     public LibroPerfil getLibroPerfil(Long idLibro) {
         Optional<Libro> libro = libroRepository.findById(idLibro);
         if(libro.isPresent()){
-            return mapToLibroPerfil(libro.get());
+            return mapToLibroPerfil(libro.get(), libro.get().getValoracion().stream()
+                    .filter(val -> val.getUsuario().getNombreUsuario().equals(SecurityUtils.getUsername()))
+                    .findFirst().orElse(null));
         }
         return LibroPerfil.builder()
                 .build();
+    }
+
+    @Override
+    public ComentarioPerfilLibroResponse getComentariosLibro(Long idLibro, Integer pageIndex, Integer size) {
+        Optional<Libro> libro = libroRepository.findById(idLibro);
+        Pageable pageable = PageRequest.of(pageIndex, size);
+        if(libro.isPresent()){
+
+            Libro libroGet = libro.get();
+            List<ValoracionUsuario> response = new ArrayList<>(libroGet.getValoracion().stream()
+                    .filter(valoracion -> StringUtils.hasText(valoracion.getComentario()))
+                    .map(valoracion ->
+                            ValoracionUsuario.builder()
+                                    .username(valoracion.getUsuario().getNombreUsuario())
+                                    .fechaComentario(valoracion.getFechaComentario())
+                                    .comentario(valoracion.getComentario())
+                                    .valoracion(valoracion.getCalificacionPersonal())
+                                    .valoracionIdLibro(valoracion.getLibro().getId())
+                                    .valoracionIdUsuario(valoracion.getUsuario().getId())
+                                    .imagenUsuario(valoracion.getUsuario().getFotoPerfil())
+                                    .estaDenunciado(valoracion.getDenuncia() != null)
+                                    .build()
+                    ).toList());
+            response.sort((val1, val2) -> val2.getFechaComentario().compareTo(val1.getFechaComentario()));
+            Page<ValoracionUsuario> comentariosPage = new PageImpl<>(
+                    filteringListPage(response, pageable),
+                    pageable, response.size());
+            return ComentarioPerfilLibroResponse.builder().valoraciones(comentariosPage.getContent())
+                    .pageInfo(ResponseMapping.mapToPaginationInfo(pageable,response)).build();
+        }
+        return ComentarioPerfilLibroResponse.builder()
+                .valoraciones(new ArrayList<>()).pageInfo(ResponseMapping.mapToPaginationInfo(pageable, new ArrayList())).build();
     }
 
 

@@ -1,6 +1,7 @@
 package org.reader.low.booknbook.controller.response.usuario;
 
 import lombok.*;
+import org.reader.low.booknbook.controller.object.Combo;
 
 @Getter
 @Setter
@@ -19,9 +20,9 @@ public class PerfilUsuario {
 
     private String username;
 
-    private String genero;
+    private Combo genero;
 
-    private String tipo;
+    private Combo tipo;
 
     private boolean selfPerfil;
 }

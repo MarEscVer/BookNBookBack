@@ -15,6 +15,7 @@ import org.reader.low.booknbook.controller.response.usuario.UserInfoResponse;
 import org.reader.low.booknbook.controller.response.valoracion.ValoracionResponse;
 import org.reader.low.booknbook.model.bnb.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -77,9 +78,10 @@ public class ResponseMapping {
                 .pageInfo(pageInfo).build();
     }
 
-    public static LibroPerfil mapToLibroPerfil(Libro libro) {
+    public static LibroPerfil mapToLibroPerfil(Libro libro, Valoracion valoracion) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(libro.getFechaPublicacion());
+        log.error("ERR", valoracion);
         return LibroPerfil.builder()
                 .id(libro.getId())
                 .titulo(libro.getNombre())
@@ -89,14 +91,16 @@ public class ResponseMapping {
                 .imagen(libro.getFotoLibro())
                 .paginasTotales(libro.getPagTotal())
                 .anyo(libro.getFechaPublicacion())
-                .genero(libro.getGenero() != null ? libro.getGenero().getNombre() : null)
-                .tipo(libro.getTipo() != null ? libro.getTipo().getNombre() : null)
+                .genero(libro.getGenero() != null ? Combo.builder().id(libro.getGenero().getId()).nombre(libro.getGenero().getNombre()).build() : null)
+                .tipo(libro.getTipo() != null ? Combo.builder().id(libro.getTipo().getId()).nombre(libro.getTipo().getNombre()).build() : null)
                 .calificacionMedia(libro.getValoracion().size() > 0  ?
                         libro.getValoracion().stream()
                                 .map(Valoracion::getCalificacionPersonal)
                                 .reduce(0, Integer::sum)/libro.getValoracion().size() :
                         0)
                 .descripcion(libro.getDescripcion())
+                .contadorComentario(libro.getValoracion().stream().filter(val -> StringUtils.hasText(val.getComentario())).toList().size())
+                .estado(valoracion != null ? valoracion.getEstado() : null)
                 .build();
     }
 

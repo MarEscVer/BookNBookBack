@@ -13,6 +13,7 @@ import org.reader.low.booknbook.controller.response.LoginResponse;
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilLibrosResponse;
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
+import org.reader.low.booknbook.controller.response.libro.ComentarioPerfilLibroResponse;
 import org.reader.low.booknbook.controller.response.libro.LibroPerfil;
 import org.reader.low.booknbook.service.AutorService;
 import org.reader.low.booknbook.service.DefaultUserService;
@@ -107,5 +108,10 @@ public class DefaultUserControllerImpl implements DefaultUserController {
     @Override
     public AutorPerfilLibrosResponse getperfilAutorLibros(Long idAutor) throws SQLException, IOException {
         return autorService.getAutorPerfilLibros(idAutor);
+    }
+
+    @Override
+    public ComentarioPerfilLibroResponse getPerfilLibroComentarios(Long idLibro, Integer pageIndex, Integer size){
+        return libroService.getComentariosLibro(idLibro, pageIndex, size);
     }
 }

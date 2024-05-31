@@ -19,7 +19,7 @@ public class CreateLibroRequest {
 
     private Integer paginas;
 
-    private Long idAutor;
+    private Long autor;
 
     private Long genero;
 

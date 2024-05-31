@@ -1,6 +1,7 @@
 package org.reader.low.booknbook.controller.response.libro;
 
 import lombok.*;
+import org.reader.low.booknbook.controller.object.Combo;
 
 import java.util.Date;
 
@@ -29,9 +30,13 @@ public class LibroPerfil {
 
     private Integer calificacionMedia;
 
-    private String genero;
+    private Combo genero;
 
-    private String tipo;
+    private Combo tipo;
 
     private String descripcion;
+
+    private Integer contadorComentario;
+
+    private String estado;
 }

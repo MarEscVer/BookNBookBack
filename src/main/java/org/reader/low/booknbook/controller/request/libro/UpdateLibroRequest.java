@@ -21,7 +21,7 @@ public class UpdateLibroRequest {
 
     private String estado;
 
-    private Integer pagTotal;
+    private Integer paginas;
 
     private Long autor;
 

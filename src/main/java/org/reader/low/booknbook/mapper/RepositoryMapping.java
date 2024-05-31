@@ -70,8 +70,7 @@ public class RepositoryMapping {
         libro.setDescripcion(request.getDescripcion());
         libro.setFechaPublicacion(new Date(request.getFechaPublicacion().getTime()));
         libro.setNombre(request.getNombre());
-        libro.setPagTotal(request.getPagTotal());
-        libro.setEstado(request.getEstado());
+        libro.setPagTotal(request.getPaginas());
         return libro;
     }
 

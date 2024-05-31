@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode
 public class Denuncia implements Serializable {
 

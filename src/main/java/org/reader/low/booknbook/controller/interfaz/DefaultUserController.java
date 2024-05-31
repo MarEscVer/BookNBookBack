@@ -18,6 +18,7 @@ import org.reader.low.booknbook.controller.response.autor.AutorPerfilLibrosRespo
 import org.reader.low.booknbook.controller.response.autor.AutorPerfilResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListGrupoResponse;
 import org.reader.low.booknbook.controller.response.grupo.ListNameGrupoResponse;
+import org.reader.low.booknbook.controller.response.libro.ComentarioPerfilLibroResponse;
 import org.reader.low.booknbook.controller.response.libro.LibroPerfil;
 import org.springframework.web.bind.annotation.*;
 
@@ -142,5 +143,16 @@ public interface DefaultUserController extends Controller {
             @Parameter(name="idAutor", in = ParameterIn.PATH, description = "El id del autor que se quiere recuperar", required = true, example="1")
             @PathVariable(name="idAutor", required = true) Long idAutor) throws SQLException, IOException;
 
+    @Operation(summary = "Obtener los comentarios del libro", tags = {ApiConstants.TAG_LIBRO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = ComentarioPerfilLibroResponse.class), mediaType = ApiConstants.JSON_RESPONSE)})
+    @GetMapping("/libro/{idLibro}/comentarios")
+    ComentarioPerfilLibroResponse getPerfilLibroComentarios(
+            @Parameter(name="idLibro", in = ParameterIn.PATH, description = "El id del autor que se quiere recuperar", required = true, example="1")
+            @PathVariable(name="idLibro", required = true) Long idLibro,
+            @Parameter(name="pageIndex", in = ParameterIn.QUERY, description = "La página que quiere recuperar", required = true, example="0")
+            @RequestParam(name="pageIndex") Integer pageIndex,
+            @Parameter(name="size", in = ParameterIn.QUERY, description = "El tamaño de la lista por página", required = true, example="5")
+            @RequestParam(name="size") Integer size);
 
 }

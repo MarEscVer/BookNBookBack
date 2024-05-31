@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
 import org.reader.low.booknbook.config.security.SecurityUtils;
 import org.reader.low.booknbook.config.security.TokenUtils;
+import org.reader.low.booknbook.controller.object.Combo;
 import org.reader.low.booknbook.controller.object.ValoracionUsuario;
 import org.reader.low.booknbook.controller.request.usuario.RolRequest;
 import org.reader.low.booknbook.controller.request.usuario.UpdatePerfilUsuario;
@@ -105,8 +106,10 @@ public class UserServiceImpl implements UserService {
             Usuario usuarioGet = usuario.get();
             usuarioPerfil = PerfilUsuario.builder()
                     .username(username)
-                    .genero(usuarioGet.getPreferenciaUsuario() != null ? usuarioGet.getPreferenciaUsuario().stream().filter(genero -> "GENERO".equals(genero.getTipo())).map(Genero::getNombre).findFirst().orElse(null) : null)
-                    .tipo(usuarioGet.getPreferenciaUsuario() != null ? usuarioGet.getPreferenciaUsuario().stream().filter(genero -> "TIPO".equals(genero.getTipo())).map(Genero::getNombre).findFirst().orElse(null) : null)
+                    .genero(usuarioGet.getPreferenciaUsuario() != null ? usuarioGet.getPreferenciaUsuario().stream().filter(genero -> "GENERO".equals(genero.getTipo()))
+                            .findFirst().map(genero ->  Combo.builder().id(genero.getId()).nombre(genero.getNombre()).build()).orElse(null) : null)
+                    .tipo(usuarioGet.getPreferenciaUsuario() != null ? usuarioGet.getPreferenciaUsuario().stream().filter(genero -> "TIPO".equals(genero.getTipo()))
+                            .map(genero ->  Combo.builder().id(genero.getId()).nombre(genero.getNombre()).build()).findFirst().orElse(null) : null)
                     .imagenPerfil(usuarioGet.getFotoPerfil())
                     .nombre(usuarioGet.getNombre())
                     .apellidoUno(usuarioGet.getApellido1())
