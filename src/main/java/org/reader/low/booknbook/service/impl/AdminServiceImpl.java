@@ -126,4 +126,16 @@ public class AdminServiceImpl implements AdminService {
     public IdResponse updateAutor(UpdateAutorRequest updateAutorRequest) {
         return autorService.updateAutor(updateAutorRequest);
     }
+
+    @Override
+    public IdResponse deleteLibro(Long idLibro) {
+        Optional<Libro> libro = libroRepository.findById(idLibro);
+        if(libro.isPresent()){
+            Libro libroGet = libro.get();
+            libroGet.setEstado("INACTIVO");
+            libroGet = libroRepository.save(libroGet);
+            return IdResponse.builder().id(libroGet.getId()).message("Se ha eliminado el libro").build();
+        }
+        return IdResponse.builder().id(0L).message("No se ha podido eliminar el libro").build();
+    }
 }

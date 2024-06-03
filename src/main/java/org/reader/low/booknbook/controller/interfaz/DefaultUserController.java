@@ -62,6 +62,20 @@ public interface DefaultUserController extends Controller {
     @Operation(summary = "Obtener los libros recomendados", tags = {ApiConstants.TAG_PUBLICO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = LoginResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
+    @GetMapping("/libros")
+    ListaLibrosRecomendadosResponse listaLibros(
+            @Parameter(name="pageIndex", in = ParameterIn.QUERY, description = "La página que quiere recuperar", required = true, example="0")
+            @RequestParam(name="pageIndex") Integer pageIndex,
+            @Parameter(name="size", in = ParameterIn.QUERY, description = "El tamaño de la lista por página", required = true, example="5")
+            @RequestParam(name="size") Integer size,
+            @Parameter(name="genero", in = ParameterIn.QUERY, description = "Genero para filtrar", example="5")
+            @RequestParam(name="genero", required = false) String genero,
+            @Parameter(name="filter", in = ParameterIn.QUERY, description = "valor para filtrar", example="5")
+            @RequestParam(name="filter", required = false)String filter);
+
+    @Operation(summary = "Obtener los libros recomendados", tags = {ApiConstants.TAG_PUBLICO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = LoginResponse.class), mediaType = ApiConstants.JSON_RESPONSE) })
     @GetMapping("/libros-recomendados")
     public ListaLibrosRecomendadosResponse listaLibrosRecomendados(
             @Parameter(name="pageIndex", in = ParameterIn.QUERY, description = "La página que quiere recuperar", required = true, example="0")

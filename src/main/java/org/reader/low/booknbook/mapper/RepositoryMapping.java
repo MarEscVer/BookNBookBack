@@ -29,11 +29,11 @@ public class RepositoryMapping {
                 .build();
     }
 
-    public static UsuarioGrupo mapToUsuarioGrupo(Grupo grupo, Usuario usuario, String rol) {
+    public static UsuarioGrupo mapToUsuarioGrupo(Grupo grupo, Usuario usuario, String rol, String estado) {
         return UsuarioGrupo.builder()
                 .id(new IdUsuarioGrupo(grupo.getId(), usuario.getId()))
                 .grupo(grupo).rol(rol).usuario(usuario)
-                .estado("ACTIVO")
+                .estado(estado)
                 .build();
     }
 
@@ -62,6 +62,7 @@ public class RepositoryMapping {
                 .descripcion(request.getDescripcion())
                 .fechaPublicacion(new Date(request.getFechaPublicacion().getTime()))
                 .nombre(request.getNombre())
+                .estado("ACTIVO")
                 .pagTotal(request.getPaginas())
                 .build();
     }

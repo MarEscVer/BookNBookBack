@@ -272,4 +272,22 @@ public class ResponseMapping {
         valoracionSaved.setFechaLectura(new Date(request.getFechaLectura().getTime()));
         valoracionSaved.setPaginaActual(request.getPaginaActual());
     }
+
+    public static LecturaUsuario mapToLecturaUsuario(Valoracion valoracion) {
+        return LecturaUsuario.builder()
+                .id(valoracion.getLibro().getId())
+                .autor(valoracion.getLibro().getAutor().getPseudonimo())
+                .imagen(valoracion.getLibro().getFotoLibro())
+                .titulo(valoracion.getLibro().getNombre())
+                .descripcion(valoracion.getLibro().getDescripcion())
+                .paginasTotales(valoracion.getLibro().getPagTotal())
+                .saga(valoracion.getLibro().getSaga().getNombre())
+                .genero(Combo.builder().id(valoracion.getLibro().getGenero().getId())
+                        .nombre(valoracion.getLibro().getGenero().getNombre()).build())
+                .tipo(Combo.builder().id(valoracion.getLibro().getTipo().getId())
+                        .nombre(valoracion.getLibro().getTipo().getNombre()).build())
+                .fechaLectura(valoracion.getFechaLectura())
+                .paginasLeidas(valoracion.getPaginaActual())
+                .build();
+    }
 }

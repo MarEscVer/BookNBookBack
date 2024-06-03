@@ -27,4 +27,5 @@ public interface AdminService {
     ListLibroGestionResponse getListLibros(Integer pageIndex, Integer size, String filtro);
     IdResponse updateLibro(UpdateLibroRequest request);
     IdResponse updateAutor(UpdateAutorRequest updateAutorRequest);
+    IdResponse deleteLibro(Long idLibro);
 }

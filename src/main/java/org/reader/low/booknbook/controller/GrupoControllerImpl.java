@@ -64,4 +64,14 @@ public class GrupoControllerImpl implements GrupoController {
     public DeleteResponse deleteMyGroup(Long idGrupo) {
         return grupoService.deleteGroup(idGrupo);
     }
+
+    @Override
+    public IdResponse pertenecerAbandonarGrupo(Long idGrupo, String accion) {
+        if("P".equals(accion)) {
+            return grupoService.pertenecer(idGrupo);
+        } else if("A".equals(accion)){
+            return grupoService.abandonar(idGrupo);
+        }
+        return IdResponse.builder().build();
+    }
 }

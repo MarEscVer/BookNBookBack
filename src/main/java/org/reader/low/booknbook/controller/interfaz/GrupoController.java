@@ -70,4 +70,16 @@ public interface GrupoController extends Controller {
     DeleteResponse deleteMyGroup(
             @Parameter(name="idGrupo", in = ParameterIn.PATH, description = "El grupo que quiere eliminar", example="1")
             @PathVariable(name="idGrupo") Long idGrupo);
+
+
+    @Operation(summary = "Pertenecer(P) o Abandonar(A) a un grupo", tags = {ApiConstants.TAG_GRUPO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = DeleteResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+    @DeleteMapping("/{idGrupo}/self/{accion}")
+    IdResponse pertenecerAbandonarGrupo(
+            @Parameter(name="idGrupo", in = ParameterIn.PATH, description = "El grupo al que quiere unirse o abandonar", example="1")
+            @PathVariable(name="idGrupo")Long idGrupo,
+            @Parameter(name="accion", in = ParameterIn.PATH, description = "La accion que quiere realizar(P)(A)", example="1")
+            @Pattern(regexp = "[P|A]")
+            @PathVariable(name="accion")String accion);
 }

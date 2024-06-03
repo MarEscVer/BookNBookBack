@@ -16,6 +16,7 @@ import org.reader.low.booknbook.model.bnb.Genero;
 import org.reader.low.booknbook.model.bnb.Grupo;
 import org.reader.low.booknbook.model.bnb.Usuario;
 import org.reader.low.booknbook.model.bnb.UsuarioGrupo;
+import org.reader.low.booknbook.model.bnb.id.IdUsuarioGrupo;
 import org.reader.low.booknbook.persistence.repository.*;
 import org.reader.low.booknbook.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class GrupoServiceImpl implements GrupoService {
 
         Usuario usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
 
-        usuarioGrupoRepository.save(mapToUsuarioGrupo(grupo, usuario, "SIR"));
+        usuarioGrupoRepository.save(mapToUsuarioGrupo(grupo, usuario, "SIR", "ACTIVO"));
         return mapToIdResponseGrupo(grupo);
     }
 
@@ -89,6 +90,37 @@ public class GrupoServiceImpl implements GrupoService {
             throw new BadRequestHanderException("grupo_existe","El grupo que busca no existe");
         }
 
+    }
+
+    @Override
+    public IdResponse pertenecer(Long idGrupo) {
+        Optional<Grupo> grupo = grupoRepository.findById(idGrupo);
+        Grupo grupoGet = grupo.orElseThrow(()-> new BadRequestHanderException("grupo_pertenecer", "No se encuentra el grupo seleccionado"));
+        Usuario usuarioGet = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
+        Optional<UsuarioGrupo> usuarioGrupo = usuarioGrupoRepository.findById(new IdUsuarioGrupo(grupoGet.getId(), usuarioGet.getId()));
+        UsuarioGrupo usuarioGrupoGet;
+        if(usuarioGrupo.isPresent()){
+            usuarioGrupoGet = usuarioGrupo.get();
+            usuarioGrupoGet.setEstado("ACTIVO");
+            usuarioGrupoGet.setRol("NORMAL");
+        }else{
+            usuarioGrupoGet = mapToUsuarioGrupo(grupoGet, usuarioGet, "NORMAL", "ACTIVO");
+        }
+        UsuarioGrupo pertenecer = usuarioGrupoRepository.save(usuarioGrupoGet);
+        return IdResponse.builder().id(idGrupo).message("Se ha unido al grupo '"+pertenecer.getGrupo().getNombre()+"'").build();
+    }
+
+    @Override
+    public IdResponse abandonar(Long idGrupo) {
+        Optional<Grupo> grupo = grupoRepository.findById(idGrupo);
+        Grupo grupoGet = grupo.orElseThrow(()-> new BadRequestHanderException("grupo_abandonar", "No se encuentra el grupo seleccionado"));
+        Usuario usuarioGet = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
+        UsuarioGrupo usuarioGrupo = usuarioGrupoRepository.findById(new IdUsuarioGrupo(grupoGet.getId(), usuarioGet.getId()))
+                .orElseThrow(()-> new BadRequestHanderException("grupo_abandonar", "Aun no pertenece a este grupo"));
+        usuarioGrupo.setEstado("INACTIVO");
+        usuarioGrupo.setRol("ABANDONADO");
+        usuarioGrupo = usuarioGrupoRepository.save(usuarioGrupo);
+        return IdResponse.builder().id(idGrupo).message("Ha salido del grupo '"+usuarioGrupo.getGrupo().getNombre()+"'").build();
     }
 
     @Override

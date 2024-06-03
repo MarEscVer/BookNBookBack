@@ -6,18 +6,21 @@ import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
 import org.reader.low.booknbook.config.security.SecurityUtils;
 import org.reader.low.booknbook.config.security.TokenUtils;
 import org.reader.low.booknbook.controller.object.Combo;
+import org.reader.low.booknbook.controller.object.LecturaUsuario;
 import org.reader.low.booknbook.controller.object.ValoracionUsuario;
 import org.reader.low.booknbook.controller.request.usuario.RolRequest;
 import org.reader.low.booknbook.controller.request.usuario.UpdatePerfilUsuario;
 import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.PaginationInfo;
 import org.reader.low.booknbook.controller.response.UsernameResponse;
+import org.reader.low.booknbook.controller.response.usuario.LibrosPropiosUsuarioResponse;
 import org.reader.low.booknbook.controller.response.usuario.PerfilUsuario;
 import org.reader.low.booknbook.controller.response.usuario.UserInfoResponse;
 import org.reader.low.booknbook.controller.response.usuario.ValoracionPerfilUsuarioResponse;
 import org.reader.low.booknbook.mapper.ResponseMapping;
 import org.reader.low.booknbook.model.bnb.Genero;
 import org.reader.low.booknbook.model.bnb.Usuario;
+import org.reader.low.booknbook.model.bnb.Valoracion;
 import org.reader.low.booknbook.persistence.repository.GeneroRepository;
 import org.reader.low.booknbook.persistence.repository.PredicatesCriteria;
 import org.reader.low.booknbook.persistence.repository.UsuarioRepository;
@@ -195,4 +198,34 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken usernamePAT = TokenUtils.getAuthentication(token);
         SecurityContextHolder.getContext().setAuthentication(usernamePAT);
     }
+
+    public UsernameResponse deleteUsuario(String username, boolean self) {
+            Optional<Usuario> usuarioOpt = usuarioRepository.findByNombreUsuario(self ? SecurityUtils.getUsername() : username);
+            if(usuarioOpt.isPresent()) {
+                Usuario usuario = usuarioOpt.get();
+                usuario.setEstado(false);
+                usuario = usuarioRepository.save(usuario);
+                return UsernameResponse.builder().id(usuario.getNombreUsuario()).message("Se ha desabilitado el usuario").build();
+            }
+        return UsernameResponse.builder().id(null).message("No se ha podido desabilitar el usuario").build();
+    }
+
+    @Override
+    public LibrosPropiosUsuarioResponse librosPropios(Integer pageIndex, Integer size, String estado) {
+        Optional<Usuario> usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername());
+        if(usuario.isPresent()){
+            List<Valoracion> valoraciones = usuario.get().getValoracion();
+            List<LecturaUsuario> libros = valoraciones.stream().filter(valoracion -> estado.equals(valoracion.getEstado()))
+                    .map(ResponseMapping::mapToLecturaUsuario).toList();
+            Pageable page = PageRequest.of(pageIndex, size);
+            Page<LecturaUsuario> gruposPage = new PageImpl<>(
+                    filteringListPage(libros, page),
+                    page, libros.size());
+            return LibrosPropiosUsuarioResponse.builder().libros(gruposPage.getContent())
+                    .pageInfo(ResponseMapping.mapToPaginationInfo(page, libros)).build();
+        }
+        return LibrosPropiosUsuarioResponse.builder().build();
+    }
+
+
 }

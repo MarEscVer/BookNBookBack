@@ -109,6 +109,9 @@ public class LibroServiceImpl implements LibroService {
             sagaGet = sagaRepository.save(Saga.builder().nombre(request.getNuevaSaga()).build());
         } else if(request.getSaga() != null && request.getSaga() != 0){
             saga = sagaRepository.findById(request.getSaga());
+            if(saga.isEmpty()){
+                throw new BadRequestHanderException("crear_libro","La saga seleccionada no está en nuestra librería");
+            }
         }
         libro.setSaga(saga.orElse(sagaGet));
         autor = autorRepository.findById(request.getAutor());
@@ -119,8 +122,9 @@ public class LibroServiceImpl implements LibroService {
             Optional<Libro> libNew = autorGet.getLibros().stream().filter(lib -> request.getNombre().equals(lib.getNombre())).findFirst();
 
             return IdResponse.builder().id(libro.getId()).message("Libro creado correctamente").build();
+        }else {
+            throw new BadRequestHanderException("crear_libro","El autor seleccionado no está en nuestra agenda");
         }
-        return null;
     }
 
     @Override
@@ -350,6 +354,28 @@ public class LibroServiceImpl implements LibroService {
         }
         return ComentarioPerfilLibroResponse.builder()
                 .valoraciones(new ArrayList<>()).pageInfo(ResponseMapping.mapToPaginationInfo(pageable, new ArrayList())).build();
+    }
+
+    @Override
+    public ListaLibrosRecomendadosResponse getListlibros(Integer pageIndex, Integer size, String genero, String filter) {
+        String mensaje = "Libros";
+        List<Libro> libros = libroRepository.findAll();
+        if(StringUtils.hasText(genero)){
+            libros = libros.stream().filter(libro -> genero.toUpperCase().equals(libro.getGenero().getNombre()) ||
+                    genero.toUpperCase().equals(libro.getTipo().getNombre())).toList();
+            mensaje += " del genero " + StringUtils.capitalize(genero);
+        }
+        if(StringUtils.hasText(filter)){
+            libros = libros.stream().filter(libro -> libro.getNombre().toLowerCase().contains(filter.toLowerCase())).toList();
+        }
+        Pageable pageable = PageRequest.of(pageIndex, size);
+        Page<Libro> librosPage = new PageImpl<>(
+                filteringListPage(libros, pageable),
+                pageable, libros.size());
+        return ListaLibrosRecomendadosResponse.builder().filterName(mensaje)
+                .libros(mapToListLibroDescripcion(librosPage.getContent()))
+                .pageInfo(ResponseMapping.mapToPaginationInfo(pageable, libros))
+                .build();
     }
 
 

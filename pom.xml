@@ -12,7 +12,7 @@
 	<groupId>org.reader.low</groupId>
 	<artifactId>booknbook</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Book n' Book</name>
+	<name>booknbook</name>
 	<description>Spring Boot and Swagger 3 example: Rest API Documentation</description>
 	<properties>
 		<java.version>17</java.version>
@@ -48,6 +48,7 @@
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
+			<version>8.0.33</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>

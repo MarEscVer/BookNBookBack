@@ -38,4 +38,6 @@ public interface LibroService {
     LibroPerfil getLibroPerfil(Long idLibro);
 
     ComentarioPerfilLibroResponse getComentariosLibro(Long idLibro, Integer pageIndex, Integer size);
+
+    ListaLibrosRecomendadosResponse getListlibros(Integer pageIndex, Integer size, String genero, String filter);
 }

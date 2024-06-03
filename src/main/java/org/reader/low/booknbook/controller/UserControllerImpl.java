@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.controller.interfaz.UserController;
 import org.reader.low.booknbook.controller.request.usuario.UpdatePerfilUsuario;
 import org.reader.low.booknbook.controller.response.UsernameResponse;
+import org.reader.low.booknbook.controller.response.usuario.LibrosPropiosUsuarioResponse;
 import org.reader.low.booknbook.controller.response.usuario.PerfilUsuario;
 import org.reader.low.booknbook.controller.response.usuario.PerfilUsuarioLibrosFavoritosResponse;
 import org.reader.low.booknbook.controller.response.usuario.ValoracionPerfilUsuarioResponse;
@@ -54,5 +55,15 @@ public class UserControllerImpl implements UserController {
     @Override
     public ValoracionPerfilUsuarioResponse getListValoracionPerfil(String username) {
         return userService.getListValoracionPerfil(username);
+    }
+
+    @Override
+    public UsernameResponse deleteUsuario(){
+        return userService.deleteUsuario(null, true);
+    }
+
+    @Override
+    public LibrosPropiosUsuarioResponse librosPropios(Integer pageIndex, Integer size, String estado){
+        return userService.librosPropios(pageIndex, size, estado);
     }
 }

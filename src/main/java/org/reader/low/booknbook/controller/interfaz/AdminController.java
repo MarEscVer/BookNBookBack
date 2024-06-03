@@ -13,6 +13,7 @@ import org.reader.low.booknbook.controller.request.libro.CreateLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.UpdateLibroRequest;
 import org.reader.low.booknbook.controller.request.usuario.RolRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
+import org.reader.low.booknbook.controller.response.UsernameResponse;
 import org.reader.low.booknbook.controller.response.denuncia.MessageValoracion;
 import org.reader.low.booknbook.controller.response.denuncia.ModerateCommentsResponse;
 import org.reader.low.booknbook.controller.response.libro.ListLibroGestionResponse;
@@ -135,4 +136,20 @@ public interface AdminController extends Controller {
             @Content(schema = @Schema(implementation = IdResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @PutMapping("/libro")
     IdResponse updateLibro(@RequestBody UpdateLibroRequest request);
+
+    @Operation(summary = "Desabilitar un usuario", tags = {ApiConstants.TAG_ADMIN})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = UsernameResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+    @DeleteMapping(value = "/{username}/desactivacion")
+    UsernameResponse deleteUsuario(
+            @Parameter(name="username", in = ParameterIn.PATH, description = "Id del usuario que compone el id de valoracion", required = true, example="0")
+            @PathVariable(name="username") String username);
+
+    @Operation(summary = "Desabilitar un usuario", tags = {ApiConstants.TAG_ADMIN})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = UsernameResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+    @DeleteMapping(value = "/libro/{idLibro}/desactivacion")
+    IdResponse deleteLibro(
+            @Parameter(name="idLibro", in = ParameterIn.PATH, description = "Id del libro", required = true, example="0")
+            @PathVariable(name="idLibro") Long idLibro);
 }

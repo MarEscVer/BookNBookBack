@@ -22,4 +22,8 @@ public interface GrupoService {
     IdResponse createGroup(CreateGroupRequest createGroupRequest) throws IOException;
 
     void setImageToGroup(Long idGrupo, MultipartFile imagen) throws IOException;
+
+    IdResponse pertenecer(Long idGrupo);
+
+    IdResponse abandonar(Long idGrupo);
 }

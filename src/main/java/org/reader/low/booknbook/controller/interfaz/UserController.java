@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.reader.low.booknbook.constants.ApiConstants;
 import org.reader.low.booknbook.controller.request.usuario.UpdatePerfilUsuario;
 import org.reader.low.booknbook.controller.response.UsernameResponse;
+import org.reader.low.booknbook.controller.response.usuario.LibrosPropiosUsuarioResponse;
 import org.reader.low.booknbook.controller.response.usuario.PerfilUsuario;
 import org.reader.low.booknbook.controller.response.usuario.PerfilUsuarioLibrosFavoritosResponse;
 import org.reader.low.booknbook.controller.response.usuario.ValoracionPerfilUsuarioResponse;
@@ -61,4 +62,22 @@ public interface UserController extends Controller{
     ValoracionPerfilUsuarioResponse getListValoracionPerfil(
             @Parameter(name="username", in = ParameterIn.PATH, description = "Usuario que quiere ver el perfil", required = true, example="string")
             @PathVariable(name="username") String username);
+
+    @Operation(summary = "Desabilitar su cuenta", tags = {ApiConstants.TAG_USUARIO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = UsernameResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+    @DeleteMapping(value = "/self/desactivacion")
+    UsernameResponse deleteUsuario();
+
+    @Operation(summary = "Obtener los comentarios que ha dejado un usuario, en us perfil", tags = {ApiConstants.TAG_USUARIO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = LibrosPropiosUsuarioResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+    @GetMapping(value = "/libros/{estado}")
+    LibrosPropiosUsuarioResponse librosPropios(
+            @Parameter(name="pageIndex", in = ParameterIn.QUERY, description = "La página que quiere recuperar", required = true, example="0")
+            @RequestParam(name="pageIndex") Integer pageIndex,
+            @Parameter(name="size", in = ParameterIn.QUERY, description = "El tamaño de la lista por página", required = true, example="5")
+            @RequestParam(name="size") Integer size,
+            @Parameter(name="estado", in = ParameterIn.PATH, description = "El estado de lectura", example="LEIDO")
+            @PathVariable(name="estado", required = false) String estado);
 }

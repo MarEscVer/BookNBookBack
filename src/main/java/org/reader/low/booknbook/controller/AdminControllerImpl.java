@@ -10,6 +10,7 @@ import org.reader.low.booknbook.controller.request.libro.CreateLibroRequest;
 import org.reader.low.booknbook.controller.request.libro.UpdateLibroRequest;
 import org.reader.low.booknbook.controller.request.usuario.RolRequest;
 import org.reader.low.booknbook.controller.response.IdResponse;
+import org.reader.low.booknbook.controller.response.UsernameResponse;
 import org.reader.low.booknbook.controller.response.denuncia.MessageValoracion;
 import org.reader.low.booknbook.controller.response.denuncia.ModerateCommentsResponse;
 import org.reader.low.booknbook.controller.response.libro.ListLibroGestionResponse;
@@ -107,6 +108,16 @@ public class AdminControllerImpl implements AdminController {
     @Override
     public IdResponse updateLibro(UpdateLibroRequest request) {
         return adminService.updateLibro(request);
+    }
+
+    @Override
+    public UsernameResponse deleteUsuario(String username) {
+        return userService.deleteUsuario(username, false);
+    }
+
+    @Override
+    public IdResponse deleteLibro(Long idLibro) {
+        return adminService.deleteLibro(idLibro);
     }
 
 }

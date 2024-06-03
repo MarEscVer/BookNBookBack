@@ -88,6 +88,11 @@ public class DefaultUserControllerImpl implements DefaultUserController {
     }
 
     @Override
+    public ListaLibrosRecomendadosResponse listaLibros(Integer pageIndex, Integer size, String genero, String filter) {
+        return libroService.getListlibros(pageIndex, size, genero, filter);
+    }
+
+    @Override
     public ListGrupoResponse getListGrupos(Integer pageIndex, Integer size, String filter) {
         if (!StringUtils.hasText(filter)){
             filter = "";
