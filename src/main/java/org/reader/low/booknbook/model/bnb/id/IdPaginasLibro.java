@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.sql.Date;
 
 @Embeddable
-@EqualsAndHashCode
 @Getter
 @Setter
 @Builder
@@ -22,5 +21,6 @@ public class IdPaginasLibro implements Serializable {
     @Column(name = "id_usuario")
     private Long idUsuario;
 
+    @Column
     private Date fecha;
 }

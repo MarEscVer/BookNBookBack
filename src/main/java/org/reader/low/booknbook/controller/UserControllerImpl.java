@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.controller.interfaz.UserController;
 import org.reader.low.booknbook.controller.request.usuario.UpdatePerfilUsuario;
+import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.UsernameResponse;
 import org.reader.low.booknbook.controller.response.usuario.LibrosPropiosUsuarioResponse;
 import org.reader.low.booknbook.controller.response.usuario.PerfilUsuario;
@@ -65,5 +66,15 @@ public class UserControllerImpl implements UserController {
     @Override
     public LibrosPropiosUsuarioResponse librosPropios(Integer pageIndex, Integer size, String estado){
         return userService.librosPropios(pageIndex, size, estado);
+    }
+
+    @Override
+    public IdResponse seguirUsuario(String username){
+        return userService.seguirUsuario(username, true);
+    }
+
+    @Override
+    public IdResponse noSeguirUsuario(String username){
+        return userService.seguirUsuario(username, false);
     }
 }

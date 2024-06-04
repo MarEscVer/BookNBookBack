@@ -2,7 +2,8 @@ package org.reader.low.booknbook.controller.response.valoracion;
 
 import lombok.*;
 
-import java.util.Date;
+import java.sql.Date;
+
 
 @Builder
 @AllArgsConstructor

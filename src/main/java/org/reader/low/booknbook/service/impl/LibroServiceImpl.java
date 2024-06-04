@@ -19,6 +19,7 @@ import org.reader.low.booknbook.controller.response.usuario.PerfilUsuarioLibrosF
 import org.reader.low.booknbook.controller.response.valoracion.ValoracionResponse;
 import org.reader.low.booknbook.mapper.ResponseMapping;
 import org.reader.low.booknbook.model.bnb.*;
+import org.reader.low.booknbook.model.bnb.id.IdPaginasLibro;
 import org.reader.low.booknbook.model.bnb.id.IdValoracion;
 import org.reader.low.booknbook.persistence.repository.*;
 import org.reader.low.booknbook.service.LibroService;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +66,9 @@ public class LibroServiceImpl implements LibroService {
 
     @Autowired
     private ValoracionRepository valoracionRepository;
+
+    @Autowired
+    private PaginasLibroRepository paginasLibroRepository;
 
     @Autowired
     private PredicatesCriteria predicatesCriteria;
@@ -271,13 +276,38 @@ public class LibroServiceImpl implements LibroService {
 
     @Override
     public ValoracionResponse actualizarLibroValoracion(ValoracionResponse request) {
+
         Usuario usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
         Optional<Valoracion> valoracion = valoracionRepository.findById(IdValoracion.builder()
                 .idLibro(request.getIdLibro()).idUsuario(usuario.getId()).build());
         if(valoracion.isPresent()) {
             Valoracion valoracionGet = valoracion.get();
+            Integer pagActualPersist = valoracionGet.getPaginaActual();
             ResponseMapping.mapToValoracionUpdate(valoracionGet, request);
             valoracionGet = valoracionRepository.save(valoracionGet);
+
+            Optional<PaginasLibro> pagLib = paginasLibroRepository.findById(IdPaginasLibro.builder()
+                    .idLibro(valoracionGet.getLibro().getId())
+                    .idUsuario(valoracionGet.getUsuario().getId())
+                    .fecha(new Date(Instant.now().toEpochMilli()))
+                    .build());
+            PaginasLibro pagLibGet;
+            if(pagLib.isPresent()){
+                pagLibGet = pagLib.get();
+                pagLibGet.setPaginasLeidas(pagLibGet.getPaginasLeidas()+(request.getPaginaActual() - (pagActualPersist != null ? pagActualPersist : 0)));
+            }else {
+                pagLibGet = PaginasLibro.builder()
+                        .id(IdPaginasLibro.builder()
+                                .idLibro(valoracionGet.getLibro().getId())
+                                .idUsuario(valoracionGet.getUsuario().getId())
+                                .fecha(new Date(Instant.now().toEpochMilli()))
+                                .build())
+                        .paginasLeidas(request.getPaginaActual() - (pagActualPersist != null ? pagActualPersist : 0))
+                        .usuario(valoracionGet.getUsuario())
+                        .libro(valoracionGet.getLibro())
+                        .build();
+            }
+            paginasLibroRepository.save(pagLibGet);
             return mapToValoracionResponse(valoracionGet);
         }
         throw new BadRequestHanderException("valoracion_error", "No tiene este libro entre sus lecturas");

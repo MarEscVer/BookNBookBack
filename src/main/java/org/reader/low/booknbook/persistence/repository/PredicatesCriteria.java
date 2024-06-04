@@ -59,8 +59,8 @@ public class PredicatesCriteria {
         }
         predicates.add(cb.equal(root.get("estado"), "LEIDO"));
         cq.where(predicates.toArray((Predicate[]::new)))
-                .groupBy(root.get("id").get("idLibro"))
-                .orderBy(cb.desc(cb.count(root)));
+                .orderBy(cb.desc(cb.count(root)))
+                .groupBy(root.get("id").get("idLibro"));
         return manager.createQuery(cq)
                 .setFirstResult(pageIndex).setMaxResults(limit)
                 .getResultList();

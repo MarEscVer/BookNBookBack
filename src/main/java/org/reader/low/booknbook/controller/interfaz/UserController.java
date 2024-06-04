@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.reader.low.booknbook.constants.ApiConstants;
 import org.reader.low.booknbook.controller.request.usuario.UpdatePerfilUsuario;
+import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.UsernameResponse;
 import org.reader.low.booknbook.controller.response.usuario.LibrosPropiosUsuarioResponse;
 import org.reader.low.booknbook.controller.response.usuario.PerfilUsuario;
@@ -80,4 +81,20 @@ public interface UserController extends Controller{
             @RequestParam(name="size") Integer size,
             @Parameter(name="estado", in = ParameterIn.PATH, description = "El estado de lectura", example="LEIDO")
             @PathVariable(name="estado", required = false) String estado);
+
+    @Operation(summary = "Seguir a otro usuario", tags = {ApiConstants.TAG_USUARIO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = IdResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+    @PostMapping(value = "/usuario/{username}/follow")
+    IdResponse seguirUsuario(
+            @Parameter(name="username", in = ParameterIn.PATH, description = "El usuario al que desea seguir", example="string")
+            @PathVariable(name="username", required = false) String username);
+
+    @Operation(summary = "Dejar de seguir a otro usuario", tags = {ApiConstants.TAG_USUARIO})
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = IdResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+    @PostMapping(value = "/usuario/{username}/unfollow")
+    IdResponse noSeguirUsuario(
+            @Parameter(name="username", in = ParameterIn.PATH, description = "El usuario al que desea dejar de seguir", example="string")
+            @PathVariable(name="username", required = false) String username);
 }

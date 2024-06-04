@@ -13,25 +13,23 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 public class Seguimiento implements Serializable {
 
     @EmbeddedId
     private IdSeguimiento id;
 
     @Column(name = "seguidor")
-    private Integer seguidor;
+    private boolean seguidor;
 
     @Column(name = "seguido")
-    private Integer seguido;
+    private boolean seguido;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-     
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @MapsId("idSeguidor")
     @JoinColumn(name = "id_seguidor")
     private Usuario idSeguidor;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @MapsId("idSeguido")
     @JoinColumn(name = "id_seguido")
     private Usuario idSeguido;

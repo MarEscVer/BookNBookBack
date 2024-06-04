@@ -19,7 +19,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
@@ -268,8 +267,8 @@ public class ResponseMapping {
             valoracionSaved.setCalificacionPersonal(request.getCalificacionPersonal());
         }
 
-        valoracionSaved.setFechaComentario(new Date(request.getFechaComentario().getTime()));
-        valoracionSaved.setFechaLectura(new Date(request.getFechaLectura().getTime()));
+        valoracionSaved.setFechaComentario(request.getFechaComentario());
+        valoracionSaved.setFechaLectura(request.getFechaLectura());
         valoracionSaved.setPaginaActual(request.getPaginaActual());
     }
 

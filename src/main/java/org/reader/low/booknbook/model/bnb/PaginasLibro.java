@@ -13,7 +13,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 public class PaginasLibro implements Serializable {
 
     @EmbeddedId

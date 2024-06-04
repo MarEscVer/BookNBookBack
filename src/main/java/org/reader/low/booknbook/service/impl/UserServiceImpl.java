@@ -19,10 +19,13 @@ import org.reader.low.booknbook.controller.response.usuario.UserInfoResponse;
 import org.reader.low.booknbook.controller.response.usuario.ValoracionPerfilUsuarioResponse;
 import org.reader.low.booknbook.mapper.ResponseMapping;
 import org.reader.low.booknbook.model.bnb.Genero;
+import org.reader.low.booknbook.model.bnb.Seguimiento;
 import org.reader.low.booknbook.model.bnb.Usuario;
 import org.reader.low.booknbook.model.bnb.Valoracion;
+import org.reader.low.booknbook.model.bnb.id.IdSeguimiento;
 import org.reader.low.booknbook.persistence.repository.GeneroRepository;
 import org.reader.low.booknbook.persistence.repository.PredicatesCriteria;
+import org.reader.low.booknbook.persistence.repository.SeguimientoRepository;
 import org.reader.low.booknbook.persistence.repository.UsuarioRepository;
 import org.reader.low.booknbook.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.reader.low.booknbook.utils.ApplicationUtils.filteringListPage;
@@ -51,6 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private SeguimientoRepository seguimientoRepository;
 
     @Autowired
     private PredicatesCriteria predicatesCriteria;
@@ -225,6 +232,43 @@ public class UserServiceImpl implements UserService {
                     .pageInfo(ResponseMapping.mapToPaginationInfo(page, libros)).build();
         }
         return LibrosPropiosUsuarioResponse.builder().build();
+    }
+
+    @Override
+    public IdResponse seguirUsuario(String username, boolean accion) {
+        if(username.equals(SecurityUtils.getUsername())){
+            throw new BadRequestHanderException("follow_self","No puede seguirse a si mismo");
+        }
+        Optional<Usuario> usuario = usuarioRepository.findByNombreUsuario(username);
+        if(usuario.isPresent()){
+            Usuario usuarioSelf = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
+            Optional<Seguimiento> seguimiento = seguimientoRepository.findById(IdSeguimiento.builder()
+                    .idSeguidor(usuarioSelf.getId())
+                    .idSeguido(usuario.get().getId())
+                    .build());
+            Seguimiento seguimientoGet = seguimiento.orElseGet(()->seguimientoRepository.findById(IdSeguimiento.builder()
+                            .idSeguidor(usuario.get().getId())
+                            .idSeguido(usuarioSelf.getId())
+                            .build()).orElse(Seguimiento.builder()
+                            .id(IdSeguimiento.builder()
+                                    .idSeguidor(usuarioSelf.getId())
+                                    .idSeguido(usuario.get().getId())
+                                    .build())
+                            .seguidor(accion)
+                            .seguido(!accion)
+                            .idSeguidor(usuarioSelf)
+                            .idSeguido(usuario.get())
+                            .build()));
+
+            if(Objects.equals(seguimientoGet.getIdSeguidor().getId(), usuarioSelf.getId())){
+                seguimientoGet.setSeguidor(accion);
+            }else if(Objects.equals(seguimientoGet.getIdSeguido().getId(), usuarioSelf.getId())){
+                seguimientoGet.setSeguido(accion);
+            }
+            seguimientoRepository.save(seguimientoGet);
+        }
+        return IdResponse.builder().id(usuario.get().getId())
+                .message((accion ? "Ha seguido ": "Ha dejado de seguir ")+ "al usuario '"+ usuario.get().getNombreUsuario()+"'").build();
     }
 
 

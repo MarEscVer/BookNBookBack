@@ -25,4 +25,6 @@ public interface UserService {
     UsernameResponse deleteUsuario(String username, boolean self);
 
     LibrosPropiosUsuarioResponse librosPropios(Integer pageIndex, Integer size,String estado);
+
+    IdResponse seguirUsuario(String username, boolean accion);
 }

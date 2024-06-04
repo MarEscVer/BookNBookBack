@@ -53,22 +53,22 @@ public class Usuario implements Serializable {
     @Column(name = "estado", nullable=false, columnDefinition = "BOOLEAN default true")
     private boolean estado;
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private List<PaginasLibro> paginasLibro = new ArrayList<>();
 
-    @OneToMany(mappedBy = "idSeguido", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "idSeguido", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private List<Seguimiento> seguido = new ArrayList<>();
 
-    @OneToMany(mappedBy = "idSeguidor", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "idSeguidor", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private List<Seguimiento> seguidor = new ArrayList<>();
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private List<UsuarioGrupo> usuarioGrupo = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private List<Valoracion> valoracion = new ArrayList<>();
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private List<ComentarioGrupo> comentarioGrupo = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)

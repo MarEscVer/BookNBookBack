@@ -2,10 +2,12 @@ package org.reader.low.booknbook.model.bnb;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.reader.low.booknbook.model.bnb.id.IdPaginasLibro;
 import org.reader.low.booknbook.model.bnb.id.IdValoracion;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.Instant;
 
 @Entity
 @Table(name = "valoracion")
@@ -52,4 +54,20 @@ public class Valoracion implements Serializable {
     @MapsId("idLibro")
     @JoinColumn(name = "id_libro")
     private Libro libro;
+
+    public PaginasLibro addPaginaLibro(Integer paginaActual){
+        PaginasLibro pagLib = PaginasLibro.builder()
+                .id(IdPaginasLibro.builder()
+                        .idLibro(libro.getId())
+                        .idUsuario(usuario.getId())
+                        .fecha(new Date(Instant.now().toEpochMilli()))
+                        .build())
+                .paginasLeidas(paginaActual - (this.paginaActual != null ? paginaActual : 0))
+                .usuario(usuario)
+                .libro(libro)
+                .build();
+        libro.getPaginasLibro().add(pagLib);
+        usuario.getPaginasLibro().add(pagLib);
+        return pagLib;
+    }
 }
