@@ -24,8 +24,7 @@ public class Libro implements Serializable {
     @Column(name = "nombre", nullable=false)
     private String nombre;
 
-    @Lob
-    @Column(name = "descripcion", nullable=false)
+    @Column(name = "descripcion", nullable=false, columnDefinition = "TEXT")
     private String descripcion;
 
     @Column(name = "fechaPublicacion", nullable=false)

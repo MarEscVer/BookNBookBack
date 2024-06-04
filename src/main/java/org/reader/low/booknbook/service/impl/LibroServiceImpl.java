@@ -346,9 +346,7 @@ public class LibroServiceImpl implements LibroService {
     public LibroPerfil getLibroPerfil(Long idLibro) {
         Optional<Libro> libro = libroRepository.findById(idLibro);
         if(libro.isPresent()){
-            return mapToLibroPerfil(libro.get(), libro.get().getValoracion().stream()
-                    .filter(val -> val.getUsuario().getNombreUsuario().equals(SecurityUtils.getUsername()))
-                    .findFirst().orElse(null));
+            return mapToLibroPerfil(libro.get());
         }
         return LibroPerfil.builder()
                 .build();
@@ -391,8 +389,8 @@ public class LibroServiceImpl implements LibroService {
         String mensaje = "Libros";
         List<Libro> libros = libroRepository.findAll();
         if(StringUtils.hasText(genero)){
-            libros = libros.stream().filter(libro -> genero.toUpperCase().equals(libro.getGenero().getNombre()) ||
-                    genero.toUpperCase().equals(libro.getTipo().getNombre())).toList();
+            libros = libros.stream().filter(libro -> genero.toUpperCase().equals(libro.getGenero() != null ? libro.getGenero().getNombre() : null) ||
+                    genero.toUpperCase().equals(libro.getTipo() !=null ? libro.getTipo().getNombre() : null)).toList();
             mensaje += " del genero " + StringUtils.capitalize(genero);
         }
         if(StringUtils.hasText(filter)){

@@ -52,7 +52,8 @@ public class ResponseMapping {
 
     private static LibroObject mapToLibroObject(Libro libro) {
         //calculamos la calificacion media de todos los usuarios
-
+        Integer calificacionesTotales = libro.getValoracion().stream()
+                .filter(valoracion -> valoracion.getCalificacionPersonal() != null).toList().size();
         return LibroObject.builder()
                 .id(libro.getId())
                 .nombre(libro.getNombre())
@@ -61,9 +62,10 @@ public class ResponseMapping {
                 .fotoLibro(libro.getFotoLibro())
                 .saga(Objects.isNull(libro.getSaga()) ? null : libro.getSaga().getNombre())
                 .grupos(libro.getLibroGrupo().size())
-                .valoracion(BigDecimal.valueOf(libro.getValoracion().size() > 0 ?
+                .valoracion(BigDecimal.valueOf(calificacionesTotales > 0 ?
                         libro.getValoracion().stream()
-                                .mapToDouble(Valoracion::getCalificacionPersonal).sum() / libro.getValoracion().size() : 0))
+                                .filter(valoracion -> valoracion.getCalificacionPersonal() != null)
+                                .mapToDouble(Valoracion::getCalificacionPersonal).sum() / calificacionesTotales : 0))
                 .comentarios(libro.getValoracion().size())
                 .build();
     }
@@ -77,10 +79,12 @@ public class ResponseMapping {
                 .pageInfo(pageInfo).build();
     }
 
-    public static LibroPerfil mapToLibroPerfil(Libro libro, Valoracion valoracion) {
+    public static LibroPerfil mapToLibroPerfil(Libro libro) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(libro.getFechaPublicacion());
-        log.error("ERR", valoracion);
+        Integer valoracionesTotales = libro.getValoracion().stream()
+                .filter(valoracion -> valoracion.getCalificacionPersonal() != null).toList().size();
+
         return LibroPerfil.builder()
                 .id(libro.getId())
                 .titulo(libro.getNombre())
@@ -92,14 +96,16 @@ public class ResponseMapping {
                 .anyo(libro.getFechaPublicacion())
                 .genero(libro.getGenero() != null ? Combo.builder().id(libro.getGenero().getId()).nombre(libro.getGenero().getNombre()).build() : null)
                 .tipo(libro.getTipo() != null ? Combo.builder().id(libro.getTipo().getId()).nombre(libro.getTipo().getNombre()).build() : null)
-                .calificacionMedia(libro.getValoracion().size() > 0  ?
+                .calificacionMedia(BigDecimal.valueOf(valoracionesTotales > 0 ?
                         libro.getValoracion().stream()
-                                .map(Valoracion::getCalificacionPersonal)
-                                .reduce(0, Integer::sum)/libro.getValoracion().size() :
-                        0)
+                                .filter(valoracion -> valoracion.getCalificacionPersonal() != null)
+                                .mapToDouble(Valoracion::getCalificacionPersonal).sum() / valoracionesTotales : 0))
                 .descripcion(libro.getDescripcion())
                 .contadorComentario(libro.getValoracion().stream().filter(val -> StringUtils.hasText(val.getComentario())).toList().size())
-                .estado(valoracion != null ? valoracion.getEstado() : null)
+                .estado(SecurityUtils.getUsername() != null ?
+                        libro.getValoracion().stream()
+                                .filter(valoracion -> valoracion.getUsuario().getNombreUsuario().equals(SecurityUtils.getUsername()))
+                                .findFirst().orElse(Valoracion.builder().build()).getEstado() : null)
                 .build();
     }
 
@@ -118,6 +124,15 @@ public class ResponseMapping {
         if(verifyObjectInstance(grupo.getTipo())){
             tipo = ComboGenero.builder().id(grupo.getTipo().getId()).nombre(grupo.getTipo().getNombre()).color("Red").build();
         }
+        List<UsuarioGrupo> usuarioGrupo = grupo.getUsuarioGrupo().stream()
+                //comprobacion para no llamar al metodo que utiliza token siendo anonimo(llamada sin token)
+                .filter((UsuarioGrupo usuario) ->
+                        needToken ?
+                                usuario.getUsuario().getNombreUsuario().equals(SecurityUtils.getUsername()) :
+                                false
+                )
+                .toList();
+
         return GroupDescripcion.builder()
                 .id(grupo.getId())
                 .nombre(grupo.getNombre())
@@ -125,13 +140,7 @@ public class ResponseMapping {
                 .genero(genero)
                 .tipo(tipo)
                 .miembros(grupo.getUsuarioGrupo().size())
-                .perteneces(grupo.getUsuarioGrupo().stream()
-                        //comprobacion para no llamar al metodo que utiliza token siendo anonimo(llamada sin token)
-                        .filter((UsuarioGrupo usuario) ->
-                                needToken ?
-                                    usuario.getUsuario().getNombreUsuario().equals(SecurityUtils.getUsername()) :
-                            false
-                        ).toList().size()>0)
+                .perteneces(usuarioGrupo.size() > 0 && "ACTIVO".equals(usuarioGrupo.get(0).getEstado()))
                 .imagen(grupo.getImagen())
                 .build();
     }
@@ -280,11 +289,11 @@ public class ResponseMapping {
                 .titulo(valoracion.getLibro().getNombre())
                 .descripcion(valoracion.getLibro().getDescripcion())
                 .paginasTotales(valoracion.getLibro().getPagTotal())
-                .saga(valoracion.getLibro().getSaga().getNombre())
-                .genero(Combo.builder().id(valoracion.getLibro().getGenero().getId())
-                        .nombre(valoracion.getLibro().getGenero().getNombre()).build())
-                .tipo(Combo.builder().id(valoracion.getLibro().getTipo().getId())
-                        .nombre(valoracion.getLibro().getTipo().getNombre()).build())
+                .saga(valoracion.getLibro().getSaga() != null ? valoracion.getLibro().getSaga().getNombre() : null)
+                .genero(Combo.builder().id(valoracion.getLibro().getGenero() != null ? valoracion.getLibro().getGenero().getId() : null)
+                        .nombre(valoracion.getLibro().getGenero() != null ? valoracion.getLibro().getGenero().getNombre() : null).build())
+                .tipo(Combo.builder().id(valoracion.getLibro().getTipo() != null ? valoracion.getLibro().getTipo().getId() : null)
+                        .nombre(valoracion.getLibro().getTipo() != null ? valoracion.getLibro().getTipo().getNombre() : null).build())
                 .fechaLectura(valoracion.getFechaLectura())
                 .paginasLeidas(valoracion.getPaginaActual())
                 .build();

@@ -3,6 +3,7 @@ package org.reader.low.booknbook.controller.response.libro;
 import lombok.*;
 import org.reader.low.booknbook.controller.object.Combo;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -28,7 +29,7 @@ public class LibroPerfil {
 
     private Date anyo;
 
-    private Integer calificacionMedia;
+    private BigDecimal calificacionMedia;
 
     private Combo genero;
 

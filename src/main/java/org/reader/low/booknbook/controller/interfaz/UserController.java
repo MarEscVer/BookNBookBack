@@ -70,7 +70,7 @@ public interface UserController extends Controller{
     @DeleteMapping(value = "/self/desactivacion")
     UsernameResponse deleteUsuario();
 
-    @Operation(summary = "Obtener los comentarios que ha dejado un usuario, en us perfil", tags = {ApiConstants.TAG_USUARIO})
+    @Operation(summary = "Obtener los libros segun el estado en el que lo tengan", tags = {ApiConstants.TAG_USUARIO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = LibrosPropiosUsuarioResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @GetMapping(value = "/libros/{estado}")

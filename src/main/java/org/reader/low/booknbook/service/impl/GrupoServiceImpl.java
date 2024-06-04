@@ -3,6 +3,7 @@ package org.reader.low.booknbook.service.impl;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
+import org.reader.low.booknbook.config.error.hander.UnauthorizedHandlerException;
 import org.reader.low.booknbook.config.security.SecurityUtils;
 import org.reader.low.booknbook.constants.Constants;
 import org.reader.low.booknbook.controller.request.grupo.CreateGroupRequest;
@@ -101,8 +102,16 @@ public class GrupoServiceImpl implements GrupoService {
         UsuarioGrupo usuarioGrupoGet;
         if(usuarioGrupo.isPresent()){
             usuarioGrupoGet = usuarioGrupo.get();
-            usuarioGrupoGet.setEstado("ACTIVO");
-            usuarioGrupoGet.setRol("NORMAL");
+            if("BANEADO".equals(usuarioGrupoGet.getRol())){
+                throw new UnauthorizedHandlerException("grupo_baneado", "No puedes pertenecer a un grupo del que has sido baneado");
+            }
+
+            if("ABANDONADO".equals(usuarioGrupoGet.getRol())){
+                usuarioGrupoGet.setRol("NORMAL");
+                usuarioGrupoGet.setEstado("ACTIVO");
+            }else {
+                throw new BadRequestHanderException("grupo_pertenecer", "Ya eres miembro de este grupo");
+            }
         }else{
             usuarioGrupoGet = mapToUsuarioGrupo(grupoGet, usuarioGet, "NORMAL", "ACTIVO");
         }
@@ -117,8 +126,18 @@ public class GrupoServiceImpl implements GrupoService {
         Usuario usuarioGet = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
         UsuarioGrupo usuarioGrupo = usuarioGrupoRepository.findById(new IdUsuarioGrupo(grupoGet.getId(), usuarioGet.getId()))
                 .orElseThrow(()-> new BadRequestHanderException("grupo_abandonar", "Aun no pertenece a este grupo"));
-        usuarioGrupo.setEstado("INACTIVO");
-        usuarioGrupo.setRol("ABANDONADO");
+        if(usuarioGrupo.getRol().equals("SIR")){
+            if(usuarioGrupo.getGrupo().getUsuarioGrupo().stream().filter(usuarioGrupo1 -> usuarioGrupo1.getRol().equals("SIR")).toList().size()>1){
+                usuarioGrupo.setEstado("INACTIVO");
+                usuarioGrupo.setRol("ABANDONADO");
+            } else {
+                throw new UnauthorizedHandlerException("grupo_abandonar","Tienes que poner a otro usuario como lider");
+            }
+        }else {
+            usuarioGrupo.setEstado("INACTIVO");
+            usuarioGrupo.setRol("ABANDONADO");
+        }
+
         usuarioGrupo = usuarioGrupoRepository.save(usuarioGrupo);
         return IdResponse.builder().id(idGrupo).message("Ha salido del grupo '"+usuarioGrupo.getGrupo().getNombre()+"'").build();
     }

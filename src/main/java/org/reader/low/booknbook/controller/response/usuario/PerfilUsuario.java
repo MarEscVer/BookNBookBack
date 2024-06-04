@@ -20,9 +20,13 @@ public class PerfilUsuario {
 
     private String username;
 
+    private String email;
+
     private Combo genero;
 
     private Combo tipo;
 
     private boolean selfPerfil;
+
+    private boolean isFollow;
 }

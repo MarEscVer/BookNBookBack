@@ -124,6 +124,8 @@ public class UserServiceImpl implements UserService {
                     .nombre(usuarioGet.getNombre())
                     .apellidoUno(usuarioGet.getApellido1())
                     .apellidoDos(usuarioGet.getApellido2())
+                    .isFollow(usuarioSeguido(usuarioGet))
+                    .email(SecurityUtils.getUsername().equals(username) ? usuarioGet.getCorreo() : null)
                     .build();
         } else{
             throw new BadRequestHanderException("usuario_existe","El usuario no pertenece a nuestra comunidad");
@@ -131,6 +133,22 @@ public class UserServiceImpl implements UserService {
 
         usuarioPerfil.setSelfPerfil(SecurityUtils.getUsername().equals(username));
         return usuarioPerfil;
+    }
+
+    private boolean usuarioSeguido(Usuario usuario){
+        boolean seguido = usuario.getSeguido().stream()
+                .filter(seguimiento ->
+                        seguimiento.getIdSeguido().getNombreUsuario()
+                                .equals(SecurityUtils.getUsername()))
+                .filter(Seguimiento::isSeguido)
+                .toList().size()>0;
+        boolean seguidor = usuario.getSeguidor().stream()
+                .filter(seguimiento ->
+                        seguimiento.getIdSeguidor().getNombreUsuario()
+                                .equals(SecurityUtils.getUsername()))
+                .filter(Seguimiento::isSeguidor)
+                .toList().size()>0;
+        return seguido || seguidor;
     }
 
     @Override
@@ -158,8 +176,12 @@ public class UserServiceImpl implements UserService {
         usuario.setNombre(request.getNombre());
         usuario.setApellido1(request.getApellidoPrimero());
         usuario.setApellido2(request.getApellidoSegundo());
-        usuario.setCorreo(request.getEmail());
-        usuario.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+        if(StringUtils.hasText(request.getEmail())){
+            usuario.setCorreo(request.getEmail());
+        }
+        if(StringUtils.hasText(request.getPassword())){
+            usuario.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+        }
         usuarioRepository.save(usuario);
         updateToken(usuario);
         return UsernameResponse.builder().id(usuario.getNombreUsuario()).message("Usuario Actualizado Correctamente").build();
