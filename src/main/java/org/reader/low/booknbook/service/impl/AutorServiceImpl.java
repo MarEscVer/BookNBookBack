@@ -21,11 +21,17 @@ import java.util.Optional;
 
 import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToAutor;
 
+/**
+ * The type Autor service.
+ */
 @Slf4j
 @NoArgsConstructor
 @Service
 public class AutorServiceImpl implements AutorService {
 
+    /**
+     * The Autor repository.
+     */
     @Autowired
     private AutorRepository autorRepository;
 

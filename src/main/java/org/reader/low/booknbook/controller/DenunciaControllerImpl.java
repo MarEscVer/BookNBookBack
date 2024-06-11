@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * The type Denuncia controller.
+ */
 @Slf4j
 @NoArgsConstructor
 @RestController
@@ -18,6 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/denuncia")
 public class DenunciaControllerImpl implements DenunciaController {
 
+    /**
+     * The Denuncia service.
+     */
     @Autowired
     private DenunciaService denunciaService;
 

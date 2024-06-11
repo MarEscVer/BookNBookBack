@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * The type Token result.
+ */
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,7 +16,13 @@ import lombok.experimental.SuperBuilder;
 @Setter
 public class TokenResult {
 
-    String bearer;
+    /**
+     * The Bearer.
+     */
+    private String bearer;
 
-    String passwordEnCript;
+    /**
+     * The Password en cript.
+     */
+    private String passwordEnCript;
 }

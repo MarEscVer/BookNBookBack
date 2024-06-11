@@ -19,14 +19,31 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+/**
+ * The type Web security config.
+ */
 @Configuration
 @AllArgsConstructor
 @Slf4j
 public class WebSecurityConfig {
 
+    /**
+     * The User details service.
+     */
     private final UserDetailsService userDetailsService;
+    /**
+     * The Jwt authorization filter.
+     */
     private final JWTAuthorizationFilter jwtAuthorizationFilter;
 
+    /**
+     * Filter chain security filter chain.
+     *
+     * @param http        the http
+     * @param authManager the auth manager
+     * @return the security filter chain
+     * @throws Exception the exception
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
         JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
@@ -44,6 +61,11 @@ public class WebSecurityConfig {
                     .csrf().disable().build();
     }
 
+    /**
+     * Cors configuration source cors configuration source.
+     *
+     * @return the cors configuration source
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -55,26 +77,26 @@ public class WebSecurityConfig {
         return source;
     }
 
-    /*@Bean
-    UserDetailsService userDetailsService(){
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles()
-                .build());
-        return manager;
-    }*/
-
+    /**
+     * Auth manager authentication manager.
+     *
+     * @param http the http
+     * @return the authentication manager
+     * @throws Exception the exception
+     */
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
             return http.getSharedObject(AuthenticationManagerBuilder.class)
                     .userDetailsService(userDetailsService)
                     .passwordEncoder(passwordEncoder())
                     .and().build();
-
-
     }
 
+    /**
+     * Password encoder password encoder.
+     *
+     * @return the password encoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

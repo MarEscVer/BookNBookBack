@@ -22,14 +22,23 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
+/**
+ * The type Jwt authorization filter.
+ */
 @Component
 @Primary
 @Slf4j
 public class JWTAuthorizationFilter extends GenericFilterBean {
 
+    /**
+     * The Usuario repository.
+     */
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    /**
+     * The Resolver.
+     */
     @Qualifier("handlerExceptionResolver")
     @Autowired
     private HandlerExceptionResolver resolver;
@@ -60,6 +69,14 @@ public class JWTAuthorizationFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
+    /**
+     * Validate rol boolean.
+     *
+     * @param usernamePAT the username pat
+     * @param usuario     the usuario
+     * @return the boolean
+     * @throws UnauthorizedHandlerException the unauthorized handler exception
+     */
     private boolean validateRol(UsernamePasswordAuthenticationToken usernamePAT, Usuario usuario) throws UnauthorizedHandlerException{
         String rol = ((String)((Claims)usernamePAT.getCredentials()).get("rol"));
         if(!usuario.getRol().equals(rol)){

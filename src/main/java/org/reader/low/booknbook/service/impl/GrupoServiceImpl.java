@@ -37,25 +37,43 @@ import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToUsuarioGrup
 import static org.reader.low.booknbook.mapper.ResponseMapping.*;
 import static org.reader.low.booknbook.utils.ApplicationUtils.filteringListPage;
 
+/**
+ * The type Grupo service.
+ */
 @Slf4j
 @NoArgsConstructor
 @Service
 public class GrupoServiceImpl implements GrupoService {
 
+    /**
+     * The Grupo repository.
+     */
     @Autowired
-    private GrupoRepository grupoRepository;
+    GrupoRepository grupoRepository;
 
+    /**
+     * The Usuario repository.
+     */
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    UsuarioRepository usuarioRepository;
 
+    /**
+     * The Usuario grupo repository.
+     */
     @Autowired
-    private UsuarioGrupoRepository usuarioGrupoRepository;
+    UsuarioGrupoRepository usuarioGrupoRepository;
 
+    /**
+     * The Genero repository.
+     */
     @Autowired
-    private GeneroRepository generoRepository;
+    GeneroRepository generoRepository;
 
+    /**
+     * The Predicates criteria.
+     */
     @Autowired
-    private PredicatesCriteria predicatesCriteria;
+    PredicatesCriteria predicatesCriteria;
 
 
     @Override

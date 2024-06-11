@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * The type Message response.
+ */
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,5 +16,8 @@ import lombok.experimental.SuperBuilder;
 @Setter
 public class MessageResponse {
 
+    /**
+     * The Message.
+     */
     private String message;
 }

@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Genero.
+ */
 @Entity
 @Table(name = "genero")
 @Builder
@@ -17,31 +20,60 @@ import java.util.List;
 @EqualsAndHashCode
 public class Genero implements Serializable {
 
+    /**
+     * The Id.
+     */
     @Id
     @GeneratedValue(strategy  = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
+    /**
+     * The Nombre.
+     */
     @Column(name = "nombre", nullable=false)
-    private String nombre;
+    String nombre;
 
+    /**
+     * The Tipo.
+     */
     @Column(name = "tipo", nullable=false)
-    private String tipo;
+    String tipo;
 
+    /**
+     * The Libro genero.
+     */
     @OneToMany(mappedBy = "genero",fetch = FetchType.EAGER)
-    private List<Libro> libroGenero = new ArrayList<>();
+    List<Libro> libroGenero = new ArrayList<>();
 
+    /**
+     * The Libro tipo.
+     */
     @OneToMany(mappedBy = "genero",fetch = FetchType.EAGER)
-    private List<Libro> libroTipo = new ArrayList<>();
+    List<Libro> libroTipo = new ArrayList<>();
 
+    /**
+     * The Grupo genero.
+     */
     @OneToMany(mappedBy = "genero", cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Grupo> grupoGenero = new ArrayList<>();
+    List<Grupo> grupoGenero = new ArrayList<>();
 
+    /**
+     * The Grupo tipo.
+     */
     @OneToMany(mappedBy = "genero", cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Grupo> grupoTipo = new ArrayList<>();
+    List<Grupo> grupoTipo = new ArrayList<>();
 
+    /**
+     * The Preferencia usuario.
+     */
     @ManyToMany(mappedBy = "preferenciaUsuario", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Usuario> preferenciaUsuario = new ArrayList<>();
+    List<Usuario> preferenciaUsuario = new ArrayList<>();
 
+    /**
+     * Add preferencia usuario.
+     *
+     * @param usuario the usuario
+     */
     public void addPreferenciaUsuario(Usuario usuario) {
         if(preferenciaUsuario == null){
             preferenciaUsuario = new ArrayList<>();

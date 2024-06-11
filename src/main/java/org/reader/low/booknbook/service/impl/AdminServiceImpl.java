@@ -29,29 +29,53 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Admin service.
+ */
 @Slf4j
 @NoArgsConstructor
 @Service
 public class AdminServiceImpl implements AdminService {
 
+    /**
+     * The Autor repository.
+     */
     @Autowired
     private AutorRepository autorRepository;
 
+    /**
+     * The Libro repository.
+     */
     @Autowired
     private LibroRepository libroRepository;
 
+    /**
+     * The Libro service.
+     */
     @Autowired
     private LibroService libroService;
 
+    /**
+     * The Autor service.
+     */
     @Autowired
     private AutorService autorService;
 
+    /**
+     * The Denuncia service.
+     */
     @Autowired
     private DenunciaService denunciaService;
 
+    /**
+     * The Valoracion repository.
+     */
     @Autowired
     private ValoracionRepository valoracionRepository;
 
+    /**
+     * The User service.
+     */
     @Autowired
     private UserService userService;
 

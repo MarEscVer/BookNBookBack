@@ -12,13 +12,22 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Predicates criteria.
+ */
 @Repository
 @Slf4j
 public class PredicatesCriteria {
 
     @Autowired
-    private EntityManager manager;
+    EntityManager manager;
 
+    /**
+     * Search group list.
+     *
+     * @param filter the filter
+     * @return the list
+     */
     public List<Grupo> searchGroup(String filter) {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Grupo> cq = cb.createQuery(Grupo.class);
@@ -34,6 +43,12 @@ public class PredicatesCriteria {
         return manager.createQuery(cq).getResultList();
     }
 
+    /**
+     * Search autor list.
+     *
+     * @param filter the filter
+     * @return the list
+     */
     public List<Autor> searchAutor(String filter) {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Autor> cq = cb.createQuery(Autor.class);
@@ -46,6 +61,14 @@ public class PredicatesCriteria {
     }
 
 
+    /**
+     * Libros mas leidos list.
+     *
+     * @param genero    the genero
+     * @param pageIndex the page index
+     * @param limit     the limit
+     * @return the list
+     */
     public List<Valoracion> librosMasLeidos(String genero, Integer pageIndex, Integer limit) {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
@@ -66,6 +89,14 @@ public class PredicatesCriteria {
                 .getResultList();
     }
 
+    /**
+     * Libros recomendados list.
+     *
+     * @param genero    the genero
+     * @param pageIndex the page index
+     * @param limit     the limit
+     * @return the list
+     */
     public List<Valoracion> librosRecomendados(String genero, Integer pageIndex, Integer limit) {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Valoracion> cq = cb.createQuery(Valoracion.class);
@@ -86,6 +117,14 @@ public class PredicatesCriteria {
                 .getResultList();
     }
 
+    /**
+     * Libros novedades list.
+     *
+     * @param genero    the genero
+     * @param pageIndex the page index
+     * @param limit     the limit
+     * @return the list
+     */
     public List<Libro> librosNovedades(String genero, Integer pageIndex, Integer limit) {
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Libro> cq = cb.createQuery(Libro.class);
@@ -105,6 +144,14 @@ public class PredicatesCriteria {
                 .getResultList();
     }
 
+    /**
+     * Usuarios activos list.
+     *
+     * @param username  the username
+     * @param pageIndex the page index
+     * @param limit     the limit
+     * @return the list
+     */
     public List<Usuario> usuariosActivos(String username, Integer pageIndex, Integer limit){
         CriteriaBuilder cb = manager.getCriteriaBuilder();
         CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class);

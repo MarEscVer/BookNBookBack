@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * The type Autor controller.
+ */
 @Slf4j
 @NoArgsConstructor
 @RestController

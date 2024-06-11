@@ -2,6 +2,9 @@ package org.reader.low.booknbook.controller.request.usuario;
 
 import lombok.*;
 
+/**
+ * The type Login request.
+ */
 @Getter
 @Setter
 @Builder
@@ -9,7 +12,13 @@ import lombok.*;
 @NoArgsConstructor
 public class LoginRequest {
 
+    /**
+     * The Username.
+     */
     private String username;
 
+    /**
+     * The Password.
+     */
     private String password;
 }

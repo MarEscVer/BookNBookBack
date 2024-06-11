@@ -5,6 +5,9 @@ import org.reader.low.booknbook.model.bnb.Seguimiento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+/**
+ * The interface Seguimiento repository.
+ */
 @Repository
 public interface SeguimientoRepository extends JpaRepository<Seguimiento, IdSeguimiento> {
 }

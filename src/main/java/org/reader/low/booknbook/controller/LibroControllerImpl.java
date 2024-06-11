@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * The type Libro controller.
+ */
 @Slf4j
 @NoArgsConstructor
 @RestController
@@ -18,6 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/libro")
 public class LibroControllerImpl implements LibroController {
 
+    /**
+     * The Libro service.
+     */
     @Autowired
     private LibroService libroService;
 

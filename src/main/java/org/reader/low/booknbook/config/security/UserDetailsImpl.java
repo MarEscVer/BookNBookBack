@@ -8,9 +8,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * The type User details.
+ */
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
+    /**
+     * The Usuario.
+     */
     private final Usuario usuario;
 
     @Override
@@ -48,10 +54,20 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
+    /**
+     * Gets nombre.
+     *
+     * @return the nombre
+     */
     public String getNombre() {
         return usuario.getNombre();
     }
 
+    /**
+     * Gets rol.
+     *
+     * @return the rol
+     */
     public String getRol() {
         return usuario.getRol();
     }

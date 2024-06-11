@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Saga.
+ */
 @Entity
 @Table(name = "saga")
 @Builder
@@ -17,13 +20,22 @@ import java.util.List;
 @EqualsAndHashCode
 public class Saga implements Serializable {
 
+    /**
+     * The Id.
+     */
     @Id
     @GeneratedValue(strategy  = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
+    /**
+     * The Nombre.
+     */
     @Column(name = "nombre", nullable=false)
-    private String nombre;
+    String nombre;
 
+    /**
+     * The Libro.
+     */
     @OneToMany(mappedBy = "saga", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Libro> libro = new ArrayList<>();
+    List<Libro> libro = new ArrayList<>();
 }

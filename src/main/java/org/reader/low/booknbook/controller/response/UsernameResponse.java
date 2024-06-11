@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * The type Username response.
+ */
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,7 +16,13 @@ import lombok.experimental.SuperBuilder;
 @Setter
 public class UsernameResponse {
 
+    /**
+     * The Id.
+     */
     private String id;
 
+    /**
+     * The Message.
+     */
     private String message;
 }

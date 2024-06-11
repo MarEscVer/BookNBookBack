@@ -2,14 +2,12 @@ package org.reader.low.booknbook.controller;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.reader.low.booknbook.controller.response.usuario.CalendarioUsuarioResponse;
 import org.reader.low.booknbook.controller.interfaz.UserController;
 import org.reader.low.booknbook.controller.request.usuario.UpdatePerfilUsuario;
 import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.UsernameResponse;
-import org.reader.low.booknbook.controller.response.usuario.LibrosPropiosUsuarioResponse;
-import org.reader.low.booknbook.controller.response.usuario.PerfilUsuario;
-import org.reader.low.booknbook.controller.response.usuario.PerfilUsuarioLibrosFavoritosResponse;
-import org.reader.low.booknbook.controller.response.usuario.ValoracionPerfilUsuarioResponse;
+import org.reader.low.booknbook.controller.response.usuario.*;
 import org.reader.low.booknbook.service.LibroService;
 import org.reader.low.booknbook.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**
+ * The type User controller.
+ */
 @Slf4j
 @NoArgsConstructor
 @RestController
@@ -27,9 +28,15 @@ import java.io.IOException;
 @RequestMapping("/api/user")
 public class UserControllerImpl implements UserController {
 
+    /**
+     * The User service.
+     */
     @Autowired
     private UserService userService;
 
+    /**
+     * The Libro service.
+     */
     @Autowired
     private LibroService libroService;
 
@@ -76,5 +83,25 @@ public class UserControllerImpl implements UserController {
     @Override
     public IdResponse noSeguirUsuario(String username){
         return userService.seguirUsuario(username, false);
+    }
+
+    @Override
+    public ContadorUsuarioResponse estadisticaUsuario() {
+        return userService.estadistica();
+    }
+
+    @Override
+    public CalendarioUsuarioResponse estadisticaCalendarioUsuario(Integer anyoSelected) {
+        return userService.estadisticaCalendario(anyoSelected);
+    }
+
+    @Override
+    public EstadisticaGeneroResponse estadisticaGeneroUsuario() {
+        return userService.estadisticaGenero();
+    }
+
+    @Override
+    public EstadisticaGeneroResponse estadisticaEstadoLibro() {
+        return userService.estadisticaEstadoLibro();
     }
 }

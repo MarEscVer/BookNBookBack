@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * The type Default user controller.
+ */
 @Slf4j
 @NoArgsConstructor
 @RestController
@@ -35,15 +38,27 @@ import java.sql.SQLException;
 @RequestMapping()
 public class DefaultUserControllerImpl implements DefaultUserController {
 
+    /**
+     * The User service.
+     */
     @Autowired
     private DefaultUserService userService;
 
+    /**
+     * The Grupo service.
+     */
     @Autowired
     private GrupoService grupoService;
 
+    /**
+     * The Libro service.
+     */
     @Autowired
     private LibroService libroService;
 
+    /**
+     * The Autor service.
+     */
     @Autowired
     private AutorService autorService;
 

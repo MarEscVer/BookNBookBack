@@ -6,6 +6,9 @@ import lombok.*;
 
 import java.io.Serializable;
 
+/**
+ * The type Id valoracion.
+ */
 @Embeddable
 @EqualsAndHashCode
 @Getter
@@ -15,9 +18,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class IdValoracion implements Serializable {
 
+    /**
+     * The Id libro.
+     */
     @Column(name = "id_libro")
     private Long idLibro;
 
+    /**
+     * The Id usuario.
+     */
     @Column(name = "id_usuario")
     private Long idUsuario;
 

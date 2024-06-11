@@ -5,23 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.reader.low.booknbook.config.error.hander.BadRequestHanderException;
 import org.reader.low.booknbook.config.security.SecurityUtils;
 import org.reader.low.booknbook.config.security.TokenUtils;
-import org.reader.low.booknbook.controller.object.Combo;
-import org.reader.low.booknbook.controller.object.LecturaUsuario;
-import org.reader.low.booknbook.controller.object.ValoracionUsuario;
+import org.reader.low.booknbook.controller.response.usuario.CalendarioUsuarioResponse;
+import org.reader.low.booknbook.controller.object.*;
 import org.reader.low.booknbook.controller.request.usuario.RolRequest;
 import org.reader.low.booknbook.controller.request.usuario.UpdatePerfilUsuario;
 import org.reader.low.booknbook.controller.response.IdResponse;
 import org.reader.low.booknbook.controller.response.PaginationInfo;
 import org.reader.low.booknbook.controller.response.UsernameResponse;
-import org.reader.low.booknbook.controller.response.usuario.LibrosPropiosUsuarioResponse;
-import org.reader.low.booknbook.controller.response.usuario.PerfilUsuario;
-import org.reader.low.booknbook.controller.response.usuario.UserInfoResponse;
-import org.reader.low.booknbook.controller.response.usuario.ValoracionPerfilUsuarioResponse;
+import org.reader.low.booknbook.controller.response.usuario.*;
 import org.reader.low.booknbook.mapper.ResponseMapping;
-import org.reader.low.booknbook.model.bnb.Genero;
-import org.reader.low.booknbook.model.bnb.Seguimiento;
-import org.reader.low.booknbook.model.bnb.Usuario;
-import org.reader.low.booknbook.model.bnb.Valoracion;
+import org.reader.low.booknbook.model.bnb.*;
 import org.reader.low.booknbook.model.bnb.id.IdSeguimiento;
 import org.reader.low.booknbook.persistence.repository.GeneroRepository;
 import org.reader.low.booknbook.persistence.repository.PredicatesCriteria;
@@ -41,27 +34,41 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.sql.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.reader.low.booknbook.utils.ApplicationUtils.filteringListPage;
 
+/**
+ * The type User service.
+ */
 @Slf4j
 @NoArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
+    /**
+     * The Usuario repository.
+     */
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    /**
+     * The Seguimiento repository.
+     */
     @Autowired
     private SeguimientoRepository seguimientoRepository;
 
+    /**
+     * The Predicates criteria.
+     */
     @Autowired
     private PredicatesCriteria predicatesCriteria;
 
+    /**
+     * The Genero repository.
+     */
     @Autowired
     private GeneroRepository generoRepository;
 
@@ -135,7 +142,13 @@ public class UserServiceImpl implements UserService {
         return usuarioPerfil;
     }
 
-    private boolean usuarioSeguido(Usuario usuario){
+    /**
+     * Usuario seguido boolean.
+     *
+     * @param usuario the usuario
+     * @return the boolean
+     */
+    boolean usuarioSeguido(Usuario usuario){
         boolean seguido = usuario.getSeguido().stream()
                 .filter(seguimiento ->
                         seguimiento.getIdSeguido().getNombreUsuario()
@@ -209,20 +222,39 @@ public class UserServiceImpl implements UserService {
         return ValoracionPerfilUsuarioResponse.builder().valoraciones(new ArrayList<>()).build();
     }
 
-    private void addGenero(Usuario usuario, String tipoGenero, Long id) {
+    /**
+     * Add genero.
+     *
+     * @param usuario    the usuario
+     * @param tipoGenero the tipo genero
+     * @param id         the id
+     */
+    void addGenero(Usuario usuario, String tipoGenero, Long id) {
         Genero tipoRemove = usuario.getPreferenciaUsuario() != null ? usuario.getPreferenciaUsuario().stream()
                 .filter(genero -> tipoGenero.equals(genero.getTipo())).findFirst().orElse(null) : null;
         Genero tipoAdd = generoRepository.getReferenceById(id);
             usuario.removePreferenciaUsuario(tipoRemove);
             usuario.addPreferenciaUsuario(tipoAdd);
     }
-    private static void removeGenero(Usuario usuario, String tipoGenero){
+
+    /**
+     * Remove genero.
+     *
+     * @param usuario    the usuario
+     * @param tipoGenero the tipo genero
+     */
+    static void removeGenero(Usuario usuario, String tipoGenero){
         Genero generoRemove = usuario.getPreferenciaUsuario() != null ? usuario.getPreferenciaUsuario().stream()
                 .filter(genero -> tipoGenero.equals(genero.getTipo())).findFirst().orElse(null) : null;
         usuario.removePreferenciaUsuario(generoRemove);
     }
 
-    private void updateToken(Usuario usuario){
+    /**
+     * Update token.
+     *
+     * @param usuario the usuario
+     */
+    void updateToken(Usuario usuario){
         String token = TokenUtils.createToken(usuario.getNombreUsuario(), usuario.getNombre(), usuario.getRol());
         UsernamePasswordAuthenticationToken usernamePAT = TokenUtils.getAuthentication(token);
         SecurityContextHolder.getContext().setAuthentication(usernamePAT);
@@ -291,6 +323,101 @@ public class UserServiceImpl implements UserService {
         }
         return IdResponse.builder().id(usuario.get().getId())
                 .message((accion ? "Ha seguido ": "Ha dejado de seguir ")+ "al usuario '"+ usuario.get().getNombreUsuario()+"'").build();
+    }
+
+    @Override
+    public ContadorUsuarioResponse estadistica() {
+        Usuario usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
+        Map<Long, Long> map = usuario.getValoracion().stream().filter(valoracion -> "LEIDO".equals(valoracion.getEstado()))
+                .filter(valoracion -> valoracion.getLibro().getGenero() != null)
+                .map(valoracion -> valoracion.getLibro().getGenero())
+                .collect(Collectors.groupingBy(Genero::getId, Collectors.mapping((Genero g) -> g, Collectors.counting())));
+        Map.Entry<Long, Long> mapIdGenero = map.entrySet().stream().max(Map.Entry.comparingByValue()).orElse(null);
+        if(mapIdGenero  != null){
+            Long idGenero = mapIdGenero.getKey();
+            if(idGenero != null && idGenero != 0){
+                Optional<Genero> genero = generoRepository.findById(idGenero);
+                ComboGenero generoCombo = ComboGenero.builder().build();
+                if(genero.isPresent()){
+                    Genero generoGet = genero.get();
+                    generoCombo = ComboGenero.builder().id(generoGet.getId()).nombre(generoGet.getNombre()).build();
+                }
+                Integer paginas = usuario.getValoracion().stream()
+                        .filter(valoracion -> valoracion.getPaginaActual() != null).mapToInt(Valoracion::getPaginaActual).sum();
+                return ContadorUsuarioResponse.builder()
+                        .librosLeidos(usuario.getValoracion().stream().filter(valoracion -> "LEIDO".equals(valoracion.getEstado())).toList().size())
+                        .paginasLeidas(Long.valueOf(paginas))
+                        .valoraciones(usuario.getValoracion().stream().filter(valoracion -> valoracion.getComentario() != null).toList().size())
+                        .genero(generoCombo)
+                        .build();
+            }
+        }
+        return ContadorUsuarioResponse.builder()
+                .librosLeidos(0)
+                .paginasLeidas(0L)
+                .valoraciones(0)
+                .genero(ComboGenero.builder().build())
+                .build();
+    }
+
+    @Override
+    public EstadisticaGeneroResponse estadisticaGenero() {
+        Usuario usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
+        Map<String, Long> result = usuario.getValoracion().stream().filter(valoracion -> valoracion.getLibro().getGenero() != null)
+                .map(valoracion -> valoracion.getLibro().getGenero())
+                .collect(Collectors.groupingBy(Genero::getNombre, Collectors.mapping(genero -> genero, Collectors.counting())));
+        List<Estadistica> estadisticas = result.entrySet().stream().map(ResponseMapping::mapToEstadistica).toList();
+        return EstadisticaGeneroResponse.builder().estadisticas(estadisticas).build();
+    }
+
+    @Override
+    public EstadisticaGeneroResponse estadisticaEstadoLibro() {
+        Usuario usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
+        List<Estadistica> estadisticas = usuario.getValoracion().stream().filter(valoracion -> "LEIDO".equals(valoracion.getEstado()) ||
+                        "PROGRESO".equals(valoracion.getEstado()) ||
+                        "FAVORITO".equals(valoracion.getEstado()))
+                .collect(Collectors.groupingBy(Valoracion::getEstado, Collectors.mapping(valoracion -> valoracion, Collectors.counting())))
+                .entrySet().stream()
+                .map(ResponseMapping::mapToEstadistica).toList();
+        return EstadisticaGeneroResponse.builder().estadisticas(estadisticas).build();
+    }
+
+
+
+    @Override
+    public CalendarioUsuarioResponse estadisticaCalendario(Integer anyoSelected) {
+        Usuario usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
+        Map<Date, Long> valor = usuario.getPaginasLibro().stream()
+                .collect(Collectors.groupingBy(paginasLibro -> paginasLibro.getId().getFecha(),
+                        Collectors.mapping((PaginasLibro g) -> g, Collectors.summingLong(PaginasLibro::getPaginasLeidas))));
+        List<CalendarioLectura> finale = valor.entrySet().stream().map(UserServiceImpl::mapToCalendarioLectura).toList();
+        Set<Integer> anyos = finale.stream().collect(Collectors.groupingBy(CalendarioLectura::getYear)).keySet();
+        if(anyoSelected != null && anyoSelected != 0){
+            finale = finale.stream().filter(calendarioLectura -> Objects.equals(calendarioLectura.getYear(), anyoSelected)).toList();
+        }else {
+            Optional<Integer> anyo = finale.stream().min(Comparator.comparing(CalendarioLectura::getYear)).map(CalendarioLectura::getYear);
+
+            if(anyo.isPresent()){
+                log.error(String.valueOf(anyo.get()));
+                finale = finale.stream().filter(calendarioLectura -> Objects.equals(calendarioLectura.getYear(), anyo.get())).toList();
+            }
+        }
+        Map<Integer, List<CalendarioLectura>> result = finale.stream().collect(Collectors.groupingBy(CalendarioLectura::getYear));
+        return CalendarioUsuarioResponse.builder().anyos(anyos).estadisticaPorAnio(result).build();
+    }
+
+    /**
+     * Map to calendario lectura calendario lectura.
+     *
+     * @param mapa the mapa
+     * @return the calendario lectura
+     */
+    static CalendarioLectura mapToCalendarioLectura(Map.Entry<Date, Long> mapa){
+        String[] date = mapa.getKey().toString().split("-");
+        Integer year = Integer.valueOf(date[0]);
+        Integer month = Integer.valueOf(date[1]);
+        Integer day = Integer.valueOf(date[2]);
+        return CalendarioLectura.builder().year(year).month(month).day(day).paginasLeidas(mapa.getValue()).build();
     }
 
 

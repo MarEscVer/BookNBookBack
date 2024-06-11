@@ -19,15 +19,29 @@ import org.springframework.context.annotation.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Open api config.
+ */
 @Configuration
 public class OpenAPIConfig {
 
+  /**
+   * The Dev url.
+   */
   @Value("${booknbook.openapi.dev-url}")
   private String devUrl;
 
+  /**
+   * The Prod url.
+   */
   @Value("${booknbook.openapi.prod-url}")
   private String prodUrl;
 
+  /**
+   * My open api open api.
+   *
+   * @return the open api
+   */
   @Bean
   public OpenAPI myOpenAPI() {
     Server devServer = new Server();
@@ -46,6 +60,11 @@ public class OpenAPIConfig {
             .servers(List.of(devServer, prodServer));
   }
 
+  /**
+   * Generate tags list.
+   *
+   * @return the list
+   */
   private List<Tag> generateTags(){
     List<Tag> tags = new ArrayList<>();
 
@@ -63,9 +82,18 @@ public class OpenAPIConfig {
     ).description("Documentacion Usuario").url("https://example.com")));
     tags.add(new Tag().name(ApiConstants.TAG_ADMIN).description("Endpoints que solo usan los admin").externalDocs(new ExternalDocumentation(
     ).description("Documentacion Admin").url("https://example.com")));
+    tags.add(new Tag().name(ApiConstants.TAG_DENUNCIA).description("Endpoints que tratan las denuncias").externalDocs(new ExternalDocumentation(
+    ).description("Documentacion Denuncia").url("https://example.com")));
     return tags;
   }
 
+  /**
+   * Generate info info.
+   *
+   * @param contact the contact
+   * @param license the license
+   * @return the info
+   */
   private Info generateInfo(Contact contact, License license){
     return new Info()
             .title("Book n' Book Management API")
@@ -75,6 +103,11 @@ public class OpenAPIConfig {
             .license(license);
   }
 
+  /**
+   * Generate contact contact.
+   *
+   * @return the contact
+   */
   private Contact generateContact(){
     Contact contact = new Contact();
     contact.setEmail("Maria");
@@ -83,10 +116,20 @@ public class OpenAPIConfig {
     return contact;
   }
 
+  /**
+   * Generate license license.
+   *
+   * @return the license
+   */
   private License generateLicense(){
     return new License().name("MIT License").url("https://choosealicense.com/licenses/mit/");
   }
 
+  /**
+   * Create api key scheme security scheme.
+   *
+   * @return the security scheme
+   */
   private SecurityScheme createAPIKeyScheme() {
       return new SecurityScheme().type(SecurityScheme.Type.HTTP)
               .bearerFormat("JWT").scheme("bearer");

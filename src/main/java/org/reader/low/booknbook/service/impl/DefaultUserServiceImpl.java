@@ -27,23 +27,41 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * The type Default user service.
+ */
 @Slf4j
 @NoArgsConstructor
 @Service
 public class DefaultUserServiceImpl implements DefaultUserService {
 
+    /**
+     * The Token service.
+     */
     @Autowired
     private UserDetailsService tokenService;
 
+    /**
+     * The Usuario repository.
+     */
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    /**
+     * The Grupo repository.
+     */
     @Autowired
     private GrupoRepository grupoRepository;
 
+    /**
+     * The Valoracion repository.
+     */
     @Autowired
     private ValoracionRepository valoracionRepository;
 
+    /**
+     * The Genero repository.
+     */
     @Autowired
     private GeneroRepository generoRepository;
 

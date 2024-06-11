@@ -20,6 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**
+ * The type Grupo controller.
+ */
 @Slf4j
 @NoArgsConstructor
 @RestController
@@ -27,6 +30,9 @@ import java.io.IOException;
 @RequestMapping("/api/grupo")
 public class GrupoControllerImpl implements GrupoController {
 
+    /**
+     * The Grupo service.
+     */
     @Autowired
     private GrupoService grupoService;
 

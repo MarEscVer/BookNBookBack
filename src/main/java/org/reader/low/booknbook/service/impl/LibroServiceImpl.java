@@ -39,37 +39,63 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToLibro;
-import static org.reader.low.booknbook.mapper.RepositoryMapping.mapToValoracion;
+import static org.reader.low.booknbook.mapper.RepositoryMapping.*;
 import static org.reader.low.booknbook.mapper.ResponseMapping.*;
 import static org.reader.low.booknbook.utils.ApplicationUtils.filteringListPage;
 
+/**
+ * The type Libro service.
+ */
 @Slf4j
 @NoArgsConstructor
 @Service
 public class LibroServiceImpl implements LibroService {
 
+    /**
+     * The Usuario repository.
+     */
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    /**
+     * The Genero repository.
+     */
     @Autowired
     private GeneroRepository generoRepository;
 
+    /**
+     * The Saga repository.
+     */
     @Autowired
     private SagaRepository sagaRepository;
 
+    /**
+     * The Autor repository.
+     */
     @Autowired
     private AutorRepository autorRepository;
 
+    /**
+     * The Libro repository.
+     */
     @Autowired
     private LibroRepository libroRepository;
 
+    /**
+     * The Valoracion repository.
+     */
     @Autowired
     private ValoracionRepository valoracionRepository;
 
+    /**
+     * The Paginas libro repository.
+     */
     @Autowired
     private PaginasLibroRepository paginasLibroRepository;
 
+    /**
+     * The Predicates criteria.
+     */
     @Autowired
     private PredicatesCriteria predicatesCriteria;
 
@@ -103,7 +129,7 @@ public class LibroServiceImpl implements LibroService {
         Optional<Saga> saga = Optional.empty();
         Saga sagaGet = null;
         Libro libro = Libro.builder().build();
-        libro = mapToLibro(request, libro.toBuilder());
+        libro = mapToLibroCreate(request, libro);
         if(request.getGenero() != null && request.getGenero() != 0){
             libro.setGenero(generoRepository.findById(request.getGenero()).orElse(null));
         }
@@ -201,7 +227,13 @@ public class LibroServiceImpl implements LibroService {
                 .build();
     }
 
-    private static Predicate<Libro> getPredicateFilterLibro(String filtro){
+    /**
+     * Get predicate filter libro predicate.
+     *
+     * @param filtro the filtro
+     * @return the predicate
+     */
+    static Predicate<Libro> getPredicateFilterLibro(String filtro){
         Predicate<Libro> sagaContainFiltro = libro -> libro.getSaga() != null &&
                 libro.getSaga().getNombre().toUpperCase().contains(filtro);
         Predicate<Libro> tituloContainFiltro = libro -> libro.getNombre().toUpperCase().contains(filtro);
@@ -276,7 +308,6 @@ public class LibroServiceImpl implements LibroService {
 
     @Override
     public ValoracionResponse actualizarLibroValoracion(ValoracionResponse request) {
-
         Usuario usuario = usuarioRepository.findByNombreUsuario(SecurityUtils.getUsername()).get();
         Optional<Valoracion> valoracion = valoracionRepository.findById(IdValoracion.builder()
                 .idLibro(request.getIdLibro()).idUsuario(usuario.getId()).build());
@@ -285,7 +316,6 @@ public class LibroServiceImpl implements LibroService {
             Integer pagActualPersist = valoracionGet.getPaginaActual();
             ResponseMapping.mapToValoracionUpdate(valoracionGet, request);
             valoracionGet = valoracionRepository.save(valoracionGet);
-
             Optional<PaginasLibro> pagLib = paginasLibroRepository.findById(IdPaginasLibro.builder()
                     .idLibro(valoracionGet.getLibro().getId())
                     .idUsuario(valoracionGet.getUsuario().getId())

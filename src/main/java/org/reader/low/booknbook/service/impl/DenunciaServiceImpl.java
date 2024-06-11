@@ -28,14 +28,23 @@ import java.util.Optional;
 import static org.reader.low.booknbook.mapper.FiltersMapping.filtroModerateComments;
 import static org.reader.low.booknbook.utils.ApplicationUtils.filteringListPage;
 
+/**
+ * The type Denuncia service.
+ */
 @Slf4j
 @NoArgsConstructor
 @Service
 public class DenunciaServiceImpl implements DenunciaService {
 
+    /**
+     * The Denuncia repository.
+     */
     @Autowired
     private DenunciaRepository denunciaRepository;
 
+    /**
+     * The Valoracion repository.
+     */
     @Autowired
     private ValoracionRepository valoracionRepository;
 

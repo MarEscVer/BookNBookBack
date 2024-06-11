@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * The type Combo controller.
+ */
 @Slf4j
 @NoArgsConstructor
 @RestController
@@ -18,6 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/combo")
 public class ComboControllerImpl implements ComboController {
 
+    /**
+     * The Combo service.
+     */
     @Autowired
     private ComboService comboService;
 

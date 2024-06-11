@@ -31,6 +31,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * The type Admin controller.
+ */
 @Slf4j
 @NoArgsConstructor
 @RestController
@@ -38,9 +41,15 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminControllerImpl implements AdminController {
 
+    /**
+     * The Admin service.
+     */
     @Autowired
     private AdminService adminService;
 
+    /**
+     * The User service.
+     */
     @Autowired
     private UserService userService;
 

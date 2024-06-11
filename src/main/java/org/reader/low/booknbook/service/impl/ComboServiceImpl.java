@@ -19,23 +19,41 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Combo service.
+ */
 @Slf4j
 @NoArgsConstructor
 @Service
 public class ComboServiceImpl implements ComboService {
 
+    /**
+     * The Usuario repository.
+     */
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    /**
+     * The Autor repository.
+     */
     @Autowired
     private AutorRepository autorRepository;
 
+    /**
+     * The Predicates criteria.
+     */
     @Autowired
     private PredicatesCriteria predicatesCriteria;
 
+    /**
+     * The Genero repository.
+     */
     @Autowired
     private GeneroRepository generoRepository;
 
+    /**
+     * The Denuncia repository.
+     */
     @Autowired
     private DenunciaRepository denunciaRepository;
 

@@ -5,6 +5,9 @@ import org.reader.low.booknbook.controller.object.ValoracionUsuario;
 
 import java.util.List;
 
+/**
+ * The type Valoracion perfil usuario response.
+ */
 @Getter
 @Setter
 @Builder
@@ -12,5 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ValoracionPerfilUsuarioResponse {
 
-    List<ValoracionUsuario> valoraciones;
+    /**
+     * The Valoraciones.
+     */
+    private List<ValoracionUsuario> valoraciones;
 }

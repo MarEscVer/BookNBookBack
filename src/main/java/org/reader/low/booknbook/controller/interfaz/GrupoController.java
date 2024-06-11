@@ -19,14 +19,31 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**
+ * The interface Grupo controller.
+ */
 public interface GrupoController extends Controller {
 
+    /**
+     * Create group id response.
+     *
+     * @param createGroupRequest the create group request
+     * @return the id response
+     * @throws IOException the io exception
+     */
     @Operation(summary = "Crear un nuevo grupo", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = IdResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @PostMapping
     IdResponse createGroup(@RequestBody CreateGroupRequest createGroupRequest) throws IOException;
 
+    /**
+     * Create group imagen.
+     *
+     * @param idGrupo the id grupo
+     * @param imagen  the imagen
+     * @throws IOException the io exception
+     */
     @Operation(summary = "Poner imagen al grupo", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = void.class), mediaType = ApiConstants.JSON_RESPONSE),  })
@@ -36,6 +53,15 @@ public interface GrupoController extends Controller {
             @PathVariable(name="idGrupo")Long idGrupo,
             @RequestPart MultipartFile imagen) throws IOException;
 
+    /**
+     * Gets list group.
+     *
+     * @param type      the type
+     * @param pageIndex the page index
+     * @param size      the size
+     * @param filter    the filter
+     * @return the list group
+     */
     @Operation(summary = "Obtener los grupos que el usuario tiene", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = ListNameGrupoResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
@@ -51,6 +77,14 @@ public interface GrupoController extends Controller {
             @Parameter(name="filter", in = ParameterIn.QUERY, description = "valor para filtrar", example="5")
             @RequestParam(name="filter", required = false) String filter);
 
+    /**
+     * Gets list grupos.
+     *
+     * @param pageIndex the page index
+     * @param size      the size
+     * @param filter    the filter
+     * @return the list grupos
+     */
     @Operation(summary = "Obtener los grupos", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = ListGrupoResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
@@ -63,6 +97,12 @@ public interface GrupoController extends Controller {
             @Parameter(name="filter", in = ParameterIn.QUERY, description = "valor para filtrar", example="5")
             @RequestParam(name="filter", required = false) String filter);
 
+    /**
+     * Delete my group delete response.
+     *
+     * @param idGrupo the id grupo
+     * @return the delete response
+     */
     @Operation(summary = "Borrar el grupo seleccionado", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = DeleteResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
@@ -72,9 +112,16 @@ public interface GrupoController extends Controller {
             @PathVariable(name="idGrupo") Long idGrupo);
 
 
+    /**
+     * Pertenecer abandonar grupo id response.
+     *
+     * @param idGrupo the id grupo
+     * @param accion  the accion
+     * @return the id response
+     */
     @Operation(summary = "Pertenecer(P) o Abandonar(A) a un grupo", tags = {ApiConstants.TAG_GRUPO})
     @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = DeleteResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
+            @Content(schema = @Schema(implementation = IdResponse.class), mediaType = ApiConstants.JSON_RESPONSE),  })
     @DeleteMapping("/{idGrupo}/self/{accion}")
     IdResponse pertenecerAbandonarGrupo(
             @Parameter(name="idGrupo", in = ParameterIn.PATH, description = "El grupo al que quiere unirse o abandonar", example="1")

@@ -4,6 +4,9 @@ import org.reader.low.booknbook.model.bnb.Libro;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
+/**
+ * The interface Libro repository.
+ */
 public interface LibroRepository extends CrudRepository<Libro, Long>, JpaRepository<Libro, Long> {
 
 }

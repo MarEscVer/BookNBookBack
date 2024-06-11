@@ -13,6 +13,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * The type Jwt authentication filter.
+ */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override

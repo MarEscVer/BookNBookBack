@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * The type Login response.
+ */
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,9 +16,18 @@ import lombok.experimental.SuperBuilder;
 @Setter
 public class LoginResponse {
 
+    /**
+     * The Username.
+     */
     private String username;
 
+    /**
+     * The Rol.
+     */
     private String rol;
 
+    /**
+     * The Bearer.
+     */
     private String bearer;
 }

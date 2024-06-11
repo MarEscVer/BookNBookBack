@@ -22,14 +22,26 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 import static org.reader.low.booknbook.utils.ApplicationUtils.verifyObjectInstance;
 
+/**
+ * The type Response mapping.
+ */
 @Slf4j
 public class ResponseMapping {
 
+    /**
+     * Map to autor perfil response autor perfil response.
+     *
+     * @param autor the autor
+     * @return the autor perfil response
+     * @throws SQLException the sql exception
+     * @throws IOException  the io exception
+     */
     public static AutorPerfilResponse mapToAutorPerfilResponse(Autor autor) throws SQLException, IOException {
         return AutorPerfilResponse.builder()
                 .id(autor.getId())
@@ -40,10 +52,22 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * Map to autor perfil libros response autor perfil libros response.
+     *
+     * @param listaLibros the lista libros
+     * @return the autor perfil libros response
+     */
     public static AutorPerfilLibrosResponse mapToAutorPerfilLibrosResponse(List<LibroObject> listaLibros){
         return AutorPerfilLibrosResponse.builder().libros(listaLibros).build();
     }
 
+    /**
+     * Map to list libro object list.
+     *
+     * @param autor the autor
+     * @return the list
+     */
     public static List<LibroObject> mapToListLibroObject(Autor autor) {
         return autor.getLibros().stream()
                 .map(ResponseMapping::mapToLibroObject)
@@ -70,15 +94,45 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * Map to id response grupo id response.
+     *
+     * @param grupo the grupo
+     * @return the id response
+     */
     public static IdResponse mapToIdResponseGrupo(Grupo grupo) {
         return mapToIdResponse(grupo.getId(), "Grupo guardado Correctamente.");
     }
 
+    /**
+     * Map to estadistica estadistica.
+     *
+     * @param entry the entry
+     * @return the estadistica
+     */
+    public static Estadistica mapToEstadistica(Map.Entry<String, Long> entry) {
+        return Estadistica.builder().titulo(entry.getKey()).dato(entry.getValue()).build();
+    }
+
+    /**
+     * Map to list group response list grupo response.
+     *
+     * @param grupos    the grupos
+     * @param pageInfo  the page info
+     * @param needToken the need token
+     * @return the list grupo response
+     */
     public static ListGrupoResponse mapToListGroupResponse(List<Grupo> grupos, PaginationInfo pageInfo, boolean needToken) {
         return ListGrupoResponse.builder().listGroup(listGroupDescription(grupos, needToken))
                 .pageInfo(pageInfo).build();
     }
 
+    /**
+     * Map to libro perfil libro perfil.
+     *
+     * @param libro the libro
+     * @return the libro perfil
+     */
     public static LibroPerfil mapToLibroPerfil(Libro libro) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(libro.getFechaPublicacion());
@@ -88,6 +142,7 @@ public class ResponseMapping {
         return LibroPerfil.builder()
                 .id(libro.getId())
                 .titulo(libro.getNombre())
+                .idSaga(libro.getSaga() != null ? libro.getSaga().getId() : null)
                 .saga(libro.getSaga() != null ? libro.getSaga().getNombre() : null)
                 .idAutor(libro.getAutor() != null ? libro.getAutor().getId() : 0)
                 .autor(libro.getAutor() != null ? libro.getAutor().getPseudonimo() : null)
@@ -109,12 +164,26 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * List group description list.
+     *
+     * @param grupos    the grupos
+     * @param needToken the need token
+     * @return the list
+     */
     public static List<GroupDescripcion> listGroupDescription(List<Grupo> grupos, boolean needToken){
         return grupos.stream()
                 .map(grupo -> mapToGroupDescription(grupo, needToken))
                 .collect(toList());
     }
 
+    /**
+     * Map to group description group descripcion.
+     *
+     * @param grupo     the grupo
+     * @param needToken the need token
+     * @return the group descripcion
+     */
     public static GroupDescripcion mapToGroupDescription(Grupo grupo, boolean needToken) {
         ComboGenero genero = null;
         if(verifyObjectInstance(grupo.getGenero())){
@@ -145,6 +214,15 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * Map to list name group response list name grupo response.
+     *
+     * @param usersGroup    the users group
+     * @param type          the type
+     * @param userGroupList the user group list
+     * @param pageable      the pageable
+     * @return the list name grupo response
+     */
     public static ListNameGrupoResponse mapToListNameGroupResponse(List<UsuarioGrupo> usersGroup, String type, List<UsuarioGrupo> userGroupList, Pageable pageable){
         return ListNameGrupoResponse.builder()
                 .nombreGrupos(mapToListNombreGrupos(usersGroup, type))
@@ -167,6 +245,12 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * Mapt to moderate comments moderate comments.
+     *
+     * @param valoracion the valoracion
+     * @return the moderate comments
+     */
     public static ModerateComments maptToModerateComments(Valoracion valoracion) {
         return ModerateComments.builder()
                 .idDenuncia(valoracion.getDenuncia().getId())
@@ -179,15 +263,34 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * Map to id response id response.
+     *
+     * @param id      the id
+     * @param message the message
+     * @return the id response
+     */
     public static IdResponse mapToIdResponse(Long id, String message) {
         return IdResponse.builder().id(id).message(message).build();
     }
 
 
+    /**
+     * Map to list libro descripcion list.
+     *
+     * @param libros the libros
+     * @return the list
+     */
     public static List<LibroDescripcion> mapToListLibroDescripcion(List<Libro> libros){
         return libros.stream().map(ResponseMapping::mapToLibroDescripcion).toList();
     }
 
+    /**
+     * Map to libro descripcion libro descripcion.
+     *
+     * @param libro the libro
+     * @return the libro descripcion
+     */
     public static LibroDescripcion mapToLibroDescripcion(Libro libro){
         return LibroDescripcion.builder()
                 .id(libro.getId())
@@ -198,6 +301,13 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * Map to pagination info pagination info.
+     *
+     * @param pageable the pageable
+     * @param lista    the lista
+     * @return the pagination info
+     */
     public static PaginationInfo mapToPaginationInfo(Pageable pageable, List lista){
         Integer div = Math.floorDiv(lista.size(), pageable.getPageSize());
         Integer divNoEq0 = pageable.getPageSize()>0 && lista.size()%pageable.getPageSize() == 0 ?
@@ -215,6 +325,13 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * Map to user info response user info response.
+     *
+     * @param usuarios the usuarios
+     * @param pageInfo the page info
+     * @return the user info response
+     */
     public static UserInfoResponse mapToUserInfoResponse(List<Usuario> usuarios, PaginationInfo pageInfo) {
         return UserInfoResponse.builder()
                 .usuarios(mapToListUserInfo(usuarios))
@@ -222,7 +339,7 @@ public class ResponseMapping {
                 .build();
     }
 
-    private static List<UserInfo> mapToListUserInfo(List<Usuario> usuarios) {
+private static List<UserInfo> mapToListUserInfo(List<Usuario> usuarios) {
         return usuarios.stream().map(ResponseMapping::mapToUserInfo).toList();
     }
 
@@ -238,6 +355,12 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * Map to list libro gestion response list.
+     *
+     * @param libros the libros
+     * @return the list
+     */
     public static List<LibroGestion> mapToListLibroGestionResponse(List<Libro> libros) {
         return libros.stream().map(ResponseMapping::mapToLibroGestion).toList();
     }
@@ -255,6 +378,12 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * Map to valoracion response valoracion response.
+     *
+     * @param valoracionSaved the valoracion saved
+     * @return the valoracion response
+     */
     public static ValoracionResponse mapToValoracionResponse(Valoracion valoracionSaved) {
         return ValoracionResponse.builder()
                 .idLibro(valoracionSaved.getLibro().getId())
@@ -267,6 +396,12 @@ public class ResponseMapping {
                 .build();
     }
 
+    /**
+     * Map to valoracion update.
+     *
+     * @param valoracionSaved the valoracion saved
+     * @param request         the request
+     */
     public static void mapToValoracionUpdate(Valoracion valoracionSaved, ValoracionResponse request) {
         valoracionSaved.setEstado(request.getEstado());
         valoracionSaved.setComentario(request.getComentario());
@@ -281,6 +416,12 @@ public class ResponseMapping {
         valoracionSaved.setPaginaActual(request.getPaginaActual());
     }
 
+    /**
+     * Map to lectura usuario lectura usuario.
+     *
+     * @param valoracion the valoracion
+     * @return the lectura usuario
+     */
     public static LecturaUsuario mapToLecturaUsuario(Valoracion valoracion) {
         return LecturaUsuario.builder()
                 .id(valoracion.getLibro().getId())
